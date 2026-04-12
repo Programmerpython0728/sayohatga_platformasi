@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load i18n humanize dict_extras translate_extras %}
+
+{% block title %}{% t "Places" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="page-head">
+        <h1>{% t "Tourist places" %}</h1>
+        <p class="page-sub">{% t "Find historical places, landmarks and cities." %}</p>
+      </div>
+
+      <form class="filters" method="get">
+        <div class="filters-row">
+          <input name="q" value="{{ form.q.value|default:'' }}" placeholder="{% t 'Search...' %}" />
+          <select name="region" data-filter-region>
+            <option value="">{% t "All regions" %}</option>
+            {% for r in regions %}
+              <option value="{{ r.id }}" {% if form.region.value|stringformat:'s' == r.id|stringformat:'s' %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+          </select>
+          <select name="city" data-filter-city>
+            <option value="">{% t "All cities" %}</option>
+            {% for c in cities %}
+              <option value="{{ c.id }}" data-region="{{ c.region_id }}" {% if form.city.value|stringformat:'s' == c.id|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn" type="submit">{% t "Apply" %}</button>
+          <a class="btn btn-ghost" href="{% url 'catalog:place_list' %}">{% t "Reset" %}</a>
+        </div>
+      </form>
+
+      <div class="grid">
+        {% for place in page_obj %}
+          {% with img=image_map|get_item:place.id %}
+            <div class="card reveal">
+              {% if img %}
+                <a class="card-media" href="{% url 'catalog:place_detail' place.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+              {% else %}
+                <a class="card-media card-media--placeholder" href="{% url 'catalog:place_detail' place.id %}"><span class="media-badge">{% t "No image" %}</span></a>
+              {% endif %}
+              <div class="card-body">
+                <div class="card-topline">
+                  <a class="card-title card-title--link" href="{% url 'catalog:place_detail' place.id %}">{{ place.name }}</a>
+                  <button
+                    class="like-btn {% if place.id in liked_ids %}is-liked{% endif %}"
+                    type="button"
+                    data-like
+                    data-kind="place"
+                    data-id="{{ place.id }}"
+                    aria-label="{% t 'Like' %}">
+                    <span class="like-icon" aria-hidden="true"></span>
+                    <span class="like-count">{{ like_counts|get_item:place.id|default:0 }}</span>
+                  </button>
+                </div>
+                <div class="card-meta">{{ place.city.name }} · {{ place.city.region.name }}</div>
+                <div class="card-text">{{ place.short_description|default:place.description|truncatechars:120 }}</div>
+                {% if place.ticket_price %}
+                  <div class="chip">{{ place.ticket_price|intcomma }} UZS</div>
+                {% endif %}
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-ghost btn-sm {% if place.id in basket_ids %}is-selected{% endif %}" type="button" data-basket data-kind="place" data-id="{{ place.id }}">{% t "Basket" %}</button>
+                <a class="btn btn-ghost btn-sm" href="{% url 'catalog:place_detail' place.id %}">{% t "Info" %}</a>
+                <a class="btn btn-sm" href="{% url 'catalog:accommodation_list' %}?region={{ place.city.region.id }}">{% t "Booking" %}</a>
+              </div>
+            </div>
+          {% endwith %}
+        {% empty %}
+          <div class="empty">{% t "No results." %}</div>
+        {% endfor %}
+      </div>
+
+      {% include "partials/pagination.html" %}
+    </div>
+  </section>
+{% endblock %}

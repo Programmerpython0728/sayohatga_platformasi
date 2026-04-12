@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n translate_extras %}
+
+{% block title %}{% t "Profile" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Profile" %}</h1>
+        <p class="page-sub">{% t "Update your name and email. Phone is your login." %}</p>
+      </div>
+
+      <div class="panel panel--info">
+        <div><strong>{% t "Phone" %}:</strong> {{ user.phone_number }}</div>
+      </div>
+
+      <form class="form card-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <label>
+          <span>{% t "Full name" %}</span>
+          {{ form.full_name }}
+          {% if form.full_name.errors %}<div class="field-error">{{ form.full_name.errors }}</div>{% endif %}
+        </label>
+
+        <label>
+          <span>{% t "Email" %}</span>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="field-error">{{ form.email.errors }}</div>{% endif %}
+        </label>
+
+        <button class="btn btn-wide" type="submit">{% t "Save" %}</button>
+        <a class="btn btn-ghost btn-wide" href="{% url 'accounts:dashboard' %}">{% t "Back" %}</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

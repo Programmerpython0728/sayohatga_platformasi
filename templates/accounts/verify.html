@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n translate_extras %}
+
+{% block title %}{% t "Verify phone" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Verify your phone" %}</h1>
+        <p class="page-sub">
+          {% t "Phone number" %}: {{ pending_phone }}. {% t "Verification code" %}:
+        </p>
+      </div>
+
+      <div class="panel panel--info">
+        {% if telegram_configured %}
+          {% if telegram_mode == 'link' %}
+            <div><strong>{% t "Telegram mode" %}:</strong> link</div>
+            <div class="muted">{% t "If you didn't receive the code, open the bot and share your phone number." %}</div>
+            <a class="link" href="{% url 'accounts:telegram_help' %}">{% t "Open instructions" %}</a>
+          {% else %}
+            <div><strong>{% t "Telegram mode" %}:</strong> static</div>
+            <div class="muted">{% t "OTP is sent to the configured static chat id." %}</div>
+          {% endif %}
+        {% else %}
+          <div><strong>{% t "Telegram is not configured." %}</strong></div>
+          <div class="muted">{% t "In DEBUG mode the code is printed in server logs." %}</div>
+        {% endif %}
+      </div>
+
+      <form class="form card-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <label>
+          <span>{% t "Verification code" %}</span>
+          {{ form.code }}
+          {% if form.code.errors %}<div class="field-error">{{ form.code.errors }}</div>{% endif %}
+        </label>
+
+        <button class="btn btn-wide" type="submit">{% t "Verify" %}</button>
+      </form>
+
+      {% if can_resend %}
+        <form method="post" action="{% url 'accounts:resend_otp' %}" class="resend">
+          {% csrf_token %}
+          <button class="btn btn-ghost btn-wide" type="submit">{% t "Resend code" %}</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load i18n humanize dict_extras translate_extras %}
+
+{% block title %}{% t "Dashboard" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="page-head">
+        <h1>{% t "My bookings" %}</h1>
+        <p class="page-sub">{% t "Track your bookings and save favorites with Like." %}</p>
+      </div>
+
+      <div class="table">
+        <div class="table-row table-head">
+          <div>{% t "Accommodation" %}</div>
+          <div>{% t "Dates" %}</div>
+          <div>{% t "Guests" %}</div>
+          <div>{% t "Status" %}</div>
+          <div></div>
+        </div>
+
+        {% for b in bookings %}
+          <div class="table-row">
+            <div>
+              <a class="link" href="{% url 'catalog:accommodation_detail' b.accommodation.id %}">{{ b.accommodation.name }}</a>
+              <div class="muted small">{{ b.accommodation.city.name }} · {{ b.accommodation.city.region.name }}</div>
+            </div>
+            <div>{{ b.date_from }} → {{ b.date_to }}</div>
+            <div>{{ b.guests }}</div>
+            <div>
+              {% if b.status == 'confirmed' %}
+                <span class="status status--ok">{% t "Confirmed" %}</span>
+              {% elif b.status == 'cancelled' %}
+                <span class="status status--bad">{% t "Cancelled" %}</span>
+              {% else %}
+                <span class="status status--warn">{% t "Pending" %}</span>
+              {% endif %}
+            </div>
+            <div>
+              {% if b.status != 'cancelled' %}
+                <a class="btn btn-ghost" href="{% url 'bookings:cancel_booking' b.id %}">{% t "Cancel" %}</a>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <div class="empty">{% t "No bookings yet." %}</div>
+        {% endfor %}
+      </div>
+
+      <div class="section-head section-head--tight">
+        <h2>{% t "Liked" %}</h2>
+        <a class="link" href="{% url 'catalog:place_list' %}">{% t "Explore more" %}</a>
+      </div>
+
+      <div class="grid">
+        {% for p in liked_places %}
+          {% with img=place_images|get_item:p.id %}
+            <div class="card reveal">
+              {% if img %}
+                <a class="card-media" href="{% url 'catalog:place_detail' p.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+              {% else %}
+                <a class="card-media card-media--placeholder" href="{% url 'catalog:place_detail' p.id %}"><span class="media-badge">No image</span></a>
+              {% endif %}
+              <div class="card-body">
+                <a class="card-title card-title--link" href="{% url 'catalog:place_detail' p.id %}">{{ p.name }}</a>
+                <div class="card-meta">{{ p.city.name }} · {{ p.city.region.name }}</div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-ghost btn-sm" type="button" data-basket data-kind="place" data-id="{{ p.id }}">{% t "Basket" %}</button>
+                <a class="btn btn-ghost btn-sm" href="{% url 'catalog:place_detail' p.id %}">{% t "Info" %}</a>
+                <a class="btn btn-sm" href="{% url 'catalog:accommodation_list' %}?region={{ p.city.region.id }}">{% t "Booking" %}</a>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+        {% for a in liked_accommodations %}
+          {% with img=acc_images|get_item:a.id %}
+            <div class="card reveal">
+              {% if img %}
+                <a class="card-media" href="{% url 'catalog:accommodation_detail' a.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+              {% else %}
+                <a class="card-media card-media--placeholder" href="{% url 'catalog:accommodation_detail' a.id %}"><span class="media-badge">No image</span></a>
+              {% endif %}
+              <div class="card-body">
+                <a class="card-title card-title--link" href="{% url 'catalog:accommodation_detail' a.id %}">{{ a.name }}</a>
+                <div class="card-meta">{{ a.city.name }} · {{ a.city.region.name }}</div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-ghost btn-sm" type="button" data-basket data-kind="accommodation" data-id="{{ a.id }}">{% t "Basket" %}</button>
+                <a class="btn btn-ghost btn-sm" href="{% url 'catalog:accommodation_detail' a.id %}">{% t "Info" %}</a>
+                <a class="btn btn-sm" href="{% url 'bookings:create_booking' a.id %}">{% t "Booking" %}</a>
+              </div>
+            </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

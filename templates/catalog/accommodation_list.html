@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load i18n humanize dict_extras translate_extras %}
+
+{% block title %}{% t "Accommodations" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="page-head">
+        <h1>{% t "Accommodations" %}</h1>
+        <p class="page-sub">{% t "Hotels, dacha and resorts across Uzbekistan." %}</p>
+      </div>
+
+      <form class="filters" method="get">
+        <div class="filters-row">
+          <input name="q" value="{{ form.q.value|default:'' }}" placeholder="{% t 'Search...' %}" />
+          <select name="type">
+            {% for code,label in form.fields.type.choices %}
+              <option value="{{ code }}" {% if form.type.value == code %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <select name="region" data-filter-region>
+            <option value="">{% t "All regions" %}</option>
+            {% for r in regions %}
+              <option value="{{ r.id }}" {% if form.region.value|stringformat:'s' == r.id|stringformat:'s' %}selected{% endif %}>{{ r.name }}</option>
+            {% endfor %}
+          </select>
+          <select name="city" data-filter-city>
+            <option value="">{% t "All cities" %}</option>
+            {% for c in cities %}
+              <option value="{{ c.id }}" data-region="{{ c.region_id }}" {% if form.city.value|stringformat:'s' == c.id|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filters-row">
+          <input name="min_price" type="number" min="0" value="{{ form.min_price.value|default:'' }}" placeholder="{% t 'Min price (UZS)' %}" />
+          <input name="max_price" type="number" min="0" value="{{ form.max_price.value|default:'' }}" placeholder="{% t 'Max price (UZS)' %}" />
+          <button class="btn" type="submit">{% t "Apply" %}</button>
+          <a class="btn btn-ghost" href="{% url 'catalog:accommodation_list' %}">{% t "Reset" %}</a>
+        </div>
+      </form>
+
+      <div class="grid">
+        {% for a in page_obj %}
+          {% with img=image_map|get_item:a.id %}
+            <div class="card reveal">
+              {% if img %}
+                <a class="card-media" href="{% url 'catalog:accommodation_detail' a.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+              {% else %}
+                <a class="card-media card-media--placeholder" href="{% url 'catalog:accommodation_detail' a.id %}"><span class="media-badge">{% t "No image" %}</span></a>
+              {% endif %}
+              <div class="card-body">
+                <div class="card-topline">
+                  <a class="card-title card-title--link" href="{% url 'catalog:accommodation_detail' a.id %}">{{ a.name }}</a>
+                  <button
+                    class="like-btn {% if a.id in liked_ids %}is-liked{% endif %}"
+                    type="button"
+                    data-like
+                    data-kind="accommodation"
+                    data-id="{{ a.id }}"
+                    aria-label="{% t 'Like' %}">
+                    <span class="like-icon" aria-hidden="true"></span>
+                    <span class="like-count">{{ like_counts|get_item:a.id|default:0 }}</span>
+                  </button>
+                </div>
+                <div class="card-meta">{{ a.get_type_display }} · {{ a.city.name }} · {{ a.city.region.name }}</div>
+                <div class="card-price">{{ a.price_per_night|intcomma }} UZS / {% t "night" %}</div>
+                <div class="card-text">{{ a.short_description|default:a.description|truncatechars:120 }}</div>
+                <div class="chips">
+                  <span class="chip chip--soft">{{ a.capacity }} {% t "guests" %}</span>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn btn-ghost btn-sm {% if a.id in basket_ids %}is-selected{% endif %}" type="button" data-basket data-kind="accommodation" data-id="{{ a.id }}">{% t "Basket" %}</button>
+                <a class="btn btn-ghost btn-sm" href="{% url 'catalog:accommodation_detail' a.id %}">{% t "Info" %}</a>
+                <a class="btn btn-sm" href="{% url 'bookings:create_booking' a.id %}">{% t "Booking" %}</a>
+              </div>
+            </div>
+          {% endwith %}
+        {% empty %}
+          <div class="empty">{% t "No results." %}</div>
+        {% endfor %}
+      </div>
+
+      {% include "partials/pagination.html" %}
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n translate_extras %}
+
+{% block title %}{% t "Cancel booking" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Cancel booking" %}</h1>
+        <p class="page-sub">{{ booking.accommodation.name }} · {{ booking.date_from }} → {{ booking.date_to }}</p>
+      </div>
+
+      <form class="form card-form" method="post">
+        {% csrf_token %}
+        <p class="muted">{% t "Are you sure you want to cancel this booking?" %}</p>
+        <button class="btn btn-wide" type="submit">{% t "Yes, cancel" %}</button>
+        <a class="btn btn-ghost btn-wide" href="{% url 'accounts:dashboard' %}">{% t "Back" %}</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

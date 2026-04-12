@@ -1,0 +1,138 @@
+{% load static i18n translate_extras %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'uz' }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Sayohatga{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <script>
+      window.SAYOHATGA = {
+        likeToggleUrl: "{% url 'catalog:toggle_like' %}",
+        loginUrl: "{% url 'accounts:login' %}",
+        basketToggleUrl: "{% url 'catalog:toggle_basket' %}",
+      };
+    </script>
+    <script defer src="{% static 'js/app.js' %}"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'core:home' %}">
+          <span class="brand-mark">S</span>
+          <span class="brand-text">{% t "Sayohatga" %}</span>
+        </a>
+
+        <nav class="nav">
+          <a class="nav-link" href="{% url 'catalog:place_list' %}">{% t "Places" %}</a>
+          <a class="nav-link" href="{% url 'catalog:accommodation_list' %}">{% t "Accommodations" %}</a>
+          {% if user.is_authenticated %}
+            <a class="nav-link" href="{% url 'accounts:dashboard' %}">{% t "Dashboard" %}</a>
+            <a class="nav-link" href="{% url 'accounts:profile' %}">{% t "Profile" %}</a>
+          {% endif %}
+          <a class="nav-link nav-link--basket" href="{% url 'catalog:basket' %}">{% t "Basket" %} {% if basket_count %}<span class="basket-count">{{ basket_count }}</span>{% endif %}</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="lang-switch" aria-label="{% t 'Language' %}">
+            <div class="lang-pills" role="group" aria-label="{% t 'Language' %}">
+              <a class="lang-pill {% if current_site_language == 'uz' %}is-active{% endif %}" href="{% url 'core:set_site_language' 'uz' %}?next={{ request.get_full_path|urlencode }}">UZ</a>
+              <a class="lang-pill {% if current_site_language == 'ru' %}is-active{% endif %}" href="{% url 'core:set_site_language' 'ru' %}?next={{ request.get_full_path|urlencode }}">RU</a>
+              <a class="lang-pill {% if current_site_language == 'en' %}is-active{% endif %}" href="{% url 'core:set_site_language' 'en' %}?next={{ request.get_full_path|urlencode }}">EN</a>
+            </div>
+          </div>
+
+          {% if user.is_authenticated %}
+            <span class="user-pill">{{ user.phone_number }}</span>
+            <a class="btn btn-ghost" href="{% url 'accounts:logout' %}">{% t "Logout" %}</a>
+          {% else %}
+            <a class="btn btn-ghost" href="{% url 'accounts:login' %}">{% t "Login" %}</a>
+            <a class="btn" href="{% url 'accounts:register' %}">{% t "Register" %}</a>
+          {% endif %}
+
+          <button class="menu-btn" type="button" data-menu-toggle aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mnav" data-mobile-nav>
+        <div class="container mnav-inner">
+          <a class="mnav-link" href="{% url 'catalog:place_list' %}">{% t "Places" %}</a>
+          <a class="mnav-link" href="{% url 'catalog:accommodation_list' %}">{% t "Accommodations" %}</a>
+          {% if user.is_authenticated %}
+            <a class="mnav-link" href="{% url 'accounts:dashboard' %}">{% t "Dashboard" %}</a>
+            <a class="mnav-link" href="{% url 'accounts:profile' %}">{% t "Profile" %}</a>
+          {% else %}
+            <a class="mnav-link" href="{% url 'accounts:login' %}">{% t "Login" %}</a>
+            <a class="mnav-link" href="{% url 'accounts:register' %}">{% t "Register" %}</a>
+          {% endif %}
+          <a class="mnav-link" href="{% url 'catalog:basket' %}">{% t "Basket" %} {% if basket_count %}({{ basket_count }}){% endif %}</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="site-main">
+      <div class="container">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <div class="message message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <div class="footer-h">{% t "Biz haqimizda" %}</div>
+          <div class="footer-p">
+            {% t "Sayohatga — O'zbekiston bo'ylab joylar va turar joylarni topish, bron qilish va sayohatni oson rejalash platformasi." %}
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-h">{% t "Kontakt" %}</div>
+          <div class="footer-list">
+            <div class="footer-item"><span class="fi">Tel</span><a href="tel:+998915250728">+998 91 525 07 28</a></div>
+            <div class="footer-item"><span class="fi">Email</span><a href="mailto:info@sayohatga.uz">info@sayohatga.uz</a></div>
+            <div class="footer-item"><span class="fi">Manzil</span><span>{% t "Samarqand, O'zbekiston" %}</span></div>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-h">{% t "Foydali havolalar" %}</div>
+          <div class="footer-links2">
+            <a href="{% url 'catalog:accommodation_list' %}">{% t "To'lov usullari" %}</a>
+            <a href="{% url 'core:home' %}#">{% t "Qaytarish" %}</a>
+            <a href="{% url 'core:home' %}#">{% t "Oferta" %}</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-h">{% t "Ijtimoiy tarmoqlar" %}</div>
+          <div class="social-row">
+            <a class="social-pill" href="#" aria-label="Telegram">TG</a>
+            <a class="social-pill" href="#" aria-label="Instagram">IG</a>
+            <a class="social-pill" href="#" aria-label="Facebook">FB</a>
+          </div>
+          {% if telegram_bot_url %}
+            <a class="btn btn-ghost footer-cta" href="{{ telegram_bot_url }}" target="_blank" rel="noreferrer">{% t "Open Telegram bot" %}</a>
+          {% else %}
+            <a class="btn btn-ghost footer-cta" href="{% url 'accounts:telegram_help' %}">{% t "Open Telegram bot" %}</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="container footer-bottom-inner">
+          <div>© {% now "Y" %} {% t "Sayohatga. Barcha huquqlar himoyalangan." %}</div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

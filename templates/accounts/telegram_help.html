@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n translate_extras %}
+
+{% block title %}{% t "Telegram verification" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Telegram verification" %}</h1>
+        <p class="page-sub">{% t "How to receive OTP code in Telegram." %}</p>
+      </div>
+
+      <div class="help-card reveal">
+        <div class="help-top">
+          <div class="help-badge">{% t "OTP via Telegram" %}</div>
+          {% if telegram_bot_url %}
+            <a class="btn btn-ghost" href="{{ telegram_bot_url }}" target="_blank" rel="noreferrer">{% t "Open Telegram bot" %}</a>
+          {% else %}
+            <a class="btn btn-ghost" href="#setup">{% t "Setup bot" %}</a>
+          {% endif %}
+        </div>
+
+        <div class="help-grid">
+          <div class="help-col">
+            <div class="help-h">{% t "1) Bot setup" %}</div>
+            <ol class="steps">
+              <li>{% t "Create a Telegram bot via @BotFather." %}</li>
+              <li>{% t "Put TELEGRAM_BOT_TOKEN into .env." %}</li>
+              <li id="setup">{% t "Run the bot locally:" %}</li>
+            </ol>
+            <pre class="code">python manage.py run_telegram_bot</pre>
+          </div>
+
+          <div class="help-col">
+            <div class="help-h">{% t "2) Get your code" %}</div>
+            <ol class="steps">
+              <li>{% t "Open the bot and press Start." %}</li>
+              <li>{% t "Send your phone number (example: +998901234567) or press Share phone." %}</li>
+              <li>{% t "Bot will send you a 6-digit code (valid 5 minutes)." %}</li>
+            </ol>
+            <div class="help-note">
+              <div class="help-note-h">{% t "Tip" %}</div>
+              <div class="help-note-p">{% t "Phone number in bot and on the site must match." %}</div>
+            </div>
+          </div>
+
+          <div class="help-col">
+            <div class="help-h">{% t "3) Use on website" %}</div>
+            <ol class="steps">
+              <li>{% t "Sign up: enter phone + Telegram code + password." %}</li>
+              <li>{% t "Login: enter phone + Telegram code (or password)." %}</li>
+            </ol>
+            <div class="help-links">
+              <a class="btn btn-wide" href="{% url 'accounts:register' %}">{% t "Go to Register" %}</a>
+              <a class="btn btn-ghost btn-wide" href="{% url 'accounts:login' %}">{% t "Go to Login" %}</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-foot">
+          <div class="muted">{% t "If Telegram is not configured and DEBUG=True, OTP is printed in server logs." %}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

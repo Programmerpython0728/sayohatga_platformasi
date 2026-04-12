@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n humanize translate_extras %}
+
+{% block title %}{% t "Booking" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Booking request" %}</h1>
+        <p class="page-sub">
+          {{ accommodation.name }} · {{ accommodation.city.name }} · {{ accommodation.city.region.name }}
+        </p>
+      </div>
+
+      <div class="panel panel--info">
+        <div><strong>{% t "Price" %}:</strong> {{ accommodation.price_per_night|intcomma }} UZS / {% t "night" %}</div>
+        <div><strong>{% t "Capacity" %}:</strong> {{ accommodation.capacity }} {% t "guests" %}</div>
+      </div>
+
+      <form class="form card-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="two-col">
+          <label>
+            <span>{% t "From" %}</span>
+            {{ form.date_from }}
+            {% if form.date_from.errors %}<div class="field-error">{{ form.date_from.errors }}</div>{% endif %}
+          </label>
+          <label>
+            <span>{% t "To" %}</span>
+            {{ form.date_to }}
+            {% if form.date_to.errors %}<div class="field-error">{{ form.date_to.errors }}</div>{% endif %}
+          </label>
+        </div>
+
+        <label>
+          <span>{% t "Guests" %}</span>
+          {{ form.guests }}
+          {% if form.guests.errors %}<div class="field-error">{{ form.guests.errors }}</div>{% endif %}
+        </label>
+
+        <button class="btn btn-wide" type="submit">{% t "Send request" %}</button>
+        <a class="btn btn-ghost btn-wide" href="{% url 'catalog:accommodation_detail' accommodation.id %}">{% t "Back" %}</a>
+      </form>
+    </div>
+  </section>
+{% endblock %}

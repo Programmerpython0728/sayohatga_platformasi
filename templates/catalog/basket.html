@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load dict_extras translate_extras %}
+
+{% block title %}{% t "Basket" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="page-head">
+        <h1>{% t "Basket" %}</h1>
+        <p class="page-sub">{% t "Saved" %}</p>
+      </div>
+
+      {% if accommodations or places %}
+        <div class="grid">
+          {% for a in accommodations %}
+            {% with img=accommodation_images|get_item:a.id %}
+              <div class="card reveal">
+                {% if img %}
+                  <a class="card-media" href="{% url 'catalog:accommodation_detail' a.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+                {% else %}
+                  <a class="card-media card-media--placeholder" href="{% url 'catalog:accommodation_detail' a.id %}"><span class="media-badge">No image</span></a>
+                {% endif %}
+                <div class="card-body">
+                  <a class="card-title card-title--link" href="{% url 'catalog:accommodation_detail' a.id %}">{{ a.name }}</a>
+                  <div class="card-meta">{{ a.city.name }} · {{ a.city.region.name }}</div>
+                </div>
+                <div class="card-actions">
+                  <a class="btn btn-ghost btn-sm" href="{% url 'catalog:accommodation_detail' a.id %}">{% t "Info" %}</a>
+                  <a class="btn btn-sm" href="{% url 'bookings:create_booking' a.id %}">{% t "Booking" %}</a>
+                </div>
+              </div>
+            {% endwith %}
+          {% endfor %}
+
+          {% for p in places %}
+            {% with img=place_images|get_item:p.id %}
+              <div class="card reveal">
+                {% if img %}
+                  <a class="card-media" href="{% url 'catalog:place_detail' p.id %}" style="background-image:url('{{ img.image.url }}');"></a>
+                {% else %}
+                  <a class="card-media card-media--placeholder" href="{% url 'catalog:place_detail' p.id %}"><span class="media-badge">No image</span></a>
+                {% endif %}
+                <div class="card-body">
+                  <a class="card-title card-title--link" href="{% url 'catalog:place_detail' p.id %}">{{ p.name }}</a>
+                  <div class="card-meta">{{ p.city.name }} · {{ p.city.region.name }}</div>
+                </div>
+                <div class="card-actions">
+                  <a class="btn btn-ghost btn-sm" href="{% url 'catalog:place_detail' p.id %}">{% t "Info" %}</a>
+                  <a class="btn btn-sm" href="{% url 'catalog:accommodation_list' %}?region={{ p.city.region.id }}">{% t "Booking" %}</a>
+                </div>
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">{% t "Saved" %}</div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}
+

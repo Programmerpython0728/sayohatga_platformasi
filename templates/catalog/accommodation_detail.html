@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load i18n humanize translate_extras %}
+
+{% block title %}{{ accommodation.name }} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="crumbs">
+        <a href="{% url 'catalog:accommodation_list' %}">{% t "Accommodations" %}</a>
+        <span>/</span>
+        <span>{{ accommodation.city.region.name }}</span>
+        <span>/</span>
+        <span>{{ accommodation.name }}</span>
+      </div>
+
+      <div class="detail">
+        <div class="detail-main">
+          <h1 class="detail-title">{{ accommodation.name }}</h1>
+          <div class="detail-meta">
+            <span class="pill">{{ accommodation.get_type_display }}</span>
+            <span class="pill">{{ accommodation.city.name }}</span>
+            <span class="pill">{{ accommodation.city.region.name }}</span>
+            <span class="pill pill--accent">{{ accommodation.price_per_night|intcomma }} UZS / {% t "night" %}</span>
+            <span class="pill chip--soft">{{ accommodation.capacity }} {% t "guests" %}</span>
+            <button
+              class="like-btn like-btn--pill {% if liked %}is-liked{% endif %}"
+              type="button"
+              data-like
+              data-kind="accommodation"
+              data-id="{{ accommodation.id }}"
+              aria-label="{% t 'Like' %}">
+              <span class="like-icon" aria-hidden="true"></span>
+              <span class="like-count">{{ like_count }}</span>
+            </button>
+          </div>
+
+          {% if images %}
+            <div class="gallery" data-gallery>
+              <div class="gallery-main" style="background-image:url('{{ images.0.image.url }}')" data-gallery-main></div>
+              <div class="gallery-thumbs">
+                {% for img in images %}
+                  <button class="thumb" type="button" data-gallery-thumb data-src="{{ img.image.url }}" aria-label="{{ img.alt_text|default:accommodation.name }}">
+                    <span class="thumb-img" style="background-image:url('{{ img.image.url }}')"></span>
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <div class="gallery gallery--empty">
+              <div class="gallery-main gallery-main--placeholder"></div>
+            </div>
+          {% endif %}
+
+          <div class="prose">
+            {% if accommodation.short_description %}
+              <p class="lead">{{ accommodation.short_description }}</p>
+            {% endif %}
+            {% if accommodation.description %}
+              <p>{{ accommodation.description|linebreaksbr }}</p>
+            {% else %}
+              <p class="muted">{% t "Description will be added soon." %}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <aside class="detail-aside">
+          <div class="panel">
+            <div class="panel-title">{% t "Booking" %}</div>
+            <div class="panel-row">{% t "Choose dates and send a booking request." %}</div>
+            <a class="btn btn-wide" href="{% url 'bookings:create_booking' accommodation.id %}">{% t "Book now" %}</a>
+            {% if not user.is_authenticated %}
+              <div class="panel-hint">{% t "You need to login to book." %}</div>
+            {% endif %}
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">{% t "Location" %}</div>
+            <div class="panel-row"><strong>{% t "City" %}:</strong> {{ accommodation.city.name }}</div>
+            <div class="panel-row"><strong>{% t "Region" %}:</strong> {{ accommodation.city.region.name }}</div>
+            {% if accommodation.address %}
+              <div class="panel-row"><strong>{% t "Address" %}:</strong> {{ accommodation.address }}</div>
+            {% endif %}
+          </div>
+        </aside>
+      </div>
+
+      {% if reviews %}
+        <div class="section-head section-head--tight">
+          <h2>{% t "Reviews" %}</h2>
+        </div>
+        <div class="reviews">
+          {% for r in reviews %}
+            <div class="review">
+              <div class="review-top">
+                <div class="review-user">{{ r.user.phone_number }}</div>
+                <div class="review-rating">{{ r.rating }}/5</div>
+              </div>
+              <div class="review-text">
+                {% if r.text %}{{ r.text }}{% else %}{% t "No comment." %}{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

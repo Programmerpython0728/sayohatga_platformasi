@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% load i18n humanize translate_extras %}
+
+{% block title %}{{ place.name }} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="crumbs">
+        <a href="{% url 'catalog:place_list' %}">{% t "Places" %}</a>
+        <span>/</span>
+        <span>{{ place.city.region.name }}</span>
+        <span>/</span>
+        <span>{{ place.name }}</span>
+      </div>
+
+      <div class="detail">
+        <div class="detail-main">
+          <h1 class="detail-title">{{ place.name }}</h1>
+          <div class="detail-meta">
+            <span class="pill">{{ place.city.name }}</span>
+            <span class="pill">{{ place.city.region.name }}</span>
+            {% if place.ticket_price %}
+              <span class="pill pill--accent">{{ place.ticket_price|intcomma }} UZS</span>
+            {% endif %}
+            <button
+              class="like-btn like-btn--pill {% if liked %}is-liked{% endif %}"
+              type="button"
+              data-like
+              data-kind="place"
+              data-id="{{ place.id }}"
+              aria-label="{% t 'Like' %}">
+              <span class="like-icon" aria-hidden="true"></span>
+              <span class="like-count">{{ like_count }}</span>
+            </button>
+          </div>
+
+          {% if images %}
+            <div class="gallery" data-gallery>
+              <div class="gallery-main" style="background-image:url('{{ images.0.image.url }}')" data-gallery-main></div>
+              <div class="gallery-thumbs">
+                {% for img in images %}
+                  <button class="thumb" type="button" data-gallery-thumb data-src="{{ img.image.url }}" aria-label="{{ img.alt_text|default:place.name }}">
+                    <span class="thumb-img" style="background-image:url('{{ img.image.url }}')"></span>
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+          {% else %}
+            <div class="gallery gallery--empty">
+              <div class="gallery-main gallery-main--placeholder"></div>
+            </div>
+          {% endif %}
+
+          <div class="prose">
+            {% if place.short_description %}
+              <p class="lead">{{ place.short_description }}</p>
+            {% endif %}
+            {% if place.description %}
+              <p>{{ place.description|linebreaksbr }}</p>
+            {% else %}
+              <p class="muted">{% t "Description will be added soon." %}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <aside class="detail-aside">
+          <div class="panel">
+            <div class="panel-title">{% t "Location" %}</div>
+            <div class="panel-row"><strong>{% t "City" %}:</strong> {{ place.city.name }}</div>
+            <div class="panel-row"><strong>{% t "Region" %}:</strong> {{ place.city.region.name }}</div>
+            {% if place.address %}
+              <div class="panel-row"><strong>{% t "Address" %}:</strong> {{ place.address }}</div>
+            {% endif %}
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">{% t "Plan your trip" %}</div>
+            <a class="btn btn-wide" href="{% url 'catalog:accommodation_list' %}?region={{ place.city.region.id }}">{% t "Find stays nearby" %}</a>
+          </div>
+        </aside>
+      </div>
+
+      {% if reviews %}
+        <div class="section-head section-head--tight">
+          <h2>{% t "Reviews" %}</h2>
+        </div>
+        <div class="reviews">
+          {% for r in reviews %}
+            <div class="review">
+              <div class="review-top">
+                <div class="review-user">{{ r.user.phone_number }}</div>
+                <div class="review-rating">{{ r.rating }}/5</div>
+              </div>
+              <div class="review-text">
+                {% if r.text %}{{ r.text }}{% else %}{% t "No comment." %}{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

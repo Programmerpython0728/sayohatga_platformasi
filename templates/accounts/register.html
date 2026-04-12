@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load i18n translate_extras %}
+
+{% block title %}{% t "Register" %} · Sayohatga{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container narrow">
+      <div class="page-head">
+        <h1>{% t "Create account" %}</h1>
+        <p class="page-sub">{% t "Register with your phone number and verify via Telegram." %}</p>
+      </div>
+
+      {% if telegram_bot_url %}
+        <div class="panel panel--info">
+          <a class="link" href="{{ telegram_bot_url }}" target="_blank" rel="noreferrer">Telegram botni ochish</a>
+        </div>
+      {% elif not telegram_configured %}
+        <div class="panel panel--info">
+          <div class="muted">Telegram bot hali sozlanmagan. `.env` ichida `TELEGRAM_BOT_TOKEN` va `TELEGRAM_BOT_URL` bo'lishi kerak.</div>
+        </div>
+      {% endif %}
+
+      <form class="form card-form" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <label>
+          <span>{% t "Phone number" %}</span>
+          {{ form.phone_number }}
+          {% if form.phone_number.errors %}<div class="field-error">{{ form.phone_number.errors }}</div>{% endif %}
+        </label>
+
+        <label>
+          <span>{% t "Telegram code" %}</span>
+          {{ form.telegram_code }}
+          {% if form.telegram_code.errors %}<div class="field-error">{{ form.telegram_code.errors }}</div>{% endif %}
+          <div class="form-hint">
+            {% t "Open the bot, press Start, send your phone number, and copy the 6-digit code here." %}
+            <a href="{% url 'accounts:telegram_help' %}">{% t "Help" %}</a>
+          </div>
+        </label>
+
+        <label>
+          <span>{% t "Full name (optional)" %}</span>
+          {{ form.full_name }}
+          {% if form.full_name.errors %}<div class="field-error">{{ form.full_name.errors }}</div>{% endif %}
+        </label>
+
+        <div class="two-col">
+          <label>
+            <span>{% t "Password" %}</span>
+            {{ form.password1 }}
+            {% if form.password1.errors %}<div class="field-error">{{ form.password1.errors }}</div>{% endif %}
+          </label>
+          <label>
+            <span>{% t "Repeat password" %}</span>
+            {{ form.password2 }}
+            {% if form.password2.errors %}<div class="field-error">{{ form.password2.errors }}</div>{% endif %}
+          </label>
+        </div>
+
+        <button class="btn btn-wide" type="submit">{% t "Continue" %}</button>
+        <div class="form-hint">
+          {% t "Already have an account?" %}
+          <a href="{% url 'accounts:login' %}">{% t "Login" %}</a>
+        </div>
+        <div class="form-hint">
+          <a href="{% url 'accounts:telegram_help' %}">{% t "How Telegram verification works" %}</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}
