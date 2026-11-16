@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Bosh sahifa{% endblock %}
+{% block meta_desc %}O'zbekiston bo'yicha eng qulay turistik platforma. Joylar, mehmonxonalar va bron bir joyda.{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════
+     HERO CAROUSEL
+════════════════════════════════════════ -->
+<section class="hero" aria-label="Asosiy banner">
+
+  <!-- Live badge -->
+  <div class="hero-live">
+    <span class="live-dot"></span>
+    <span>Live</span>
+  </div>
+
+  <div class="hero-slides">
+
+    <!-- Slide 1 -->
+    <div class="hero-slide active" aria-hidden="false">
+      <div class="hero-bg" style="background-image:url('{% static "images/hero1.jpg" %}'), linear-gradient(135deg,#134e4a,#0d9488)"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hero-label" data-i18n="hero1_label">🇺🇿 O'zbekiston Turizmi</span>
+        <h1 class="hero-title display" data-i18n="hero1_title">
+          O'zbekistonni <span class="accent">kashf eting</span>
+        </h1>
+        <p class="hero-desc" data-i18n="hero1_desc">
+          Samarqand, Buxoro, Xiva va boshqa go'zal joylarga sayohat qiling. Premium xizmat, qulay narxlar.
+        </p>
+        <div class="hero-btns">
+          <a href="{% url 'places:list' %}" class="btn btn-primary btn-lg" data-i18n="hero_btn_places">Joylarni ko'rish</a>
+          <a href="{% url 'accommodations:list' %}" class="btn btn-white btn-lg" data-i18n="hero_btn_stays">Turar joy topish</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="hero-slide" aria-hidden="true">
+      <div class="hero-bg" style="background-image:url('{% static "images/hero2.jpg" %}'), linear-gradient(135deg,#1e3a5f,#0ea5e9)"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hero-label" data-i18n="hero2_label">⚡ Tez Bron</span>
+        <h1 class="hero-title display" data-i18n="hero2_title">
+          Navbatsiz <span class="accent">bron qiling</span>
+        </h1>
+        <p class="hero-desc" data-i18n="hero2_desc">
+          Mehmonxona, dacha va resortlarni bir necha soniyada bron qiling. Hech qanday ortiqcha to'lov yo'q.
+        </p>
+        <div class="hero-btns">
+          <a href="{% url 'accommodations:list' %}" class="btn btn-accent btn-lg" data-i18n="hero_btn_stays">Turar joy topish</a>
+          <a href="{% url 'users:register' %}" class="btn btn-white btn-lg" data-i18n="hero_btn_register">Ro'yxatdan o'tish</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="hero-slide" aria-hidden="true">
+      <div class="hero-bg" style="background-image:url('{% static "images/hero3.jpg" %}'), linear-gradient(135deg,#1a1a2e,#229ed9)"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hero-label" data-i18n="hero3_label">📱 Telegram OTP</span>
+        <h1 class="hero-title display" data-i18n="hero3_title">
+          Telegram orqali <span class="accent">tez tasdiqlash</span>
+        </h1>
+        <p class="hero-desc" data-i18n="hero3_desc">
+          Shaxsingizni Telegram bot orqali tasdiqlang. Xavfsiz, tez va qulay ro'yxatdan o'tish.
+        </p>
+        <div class="hero-btns">
+          <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg" data-i18n="hero_btn_register">Ro'yxatdan o'tish</a>
+          <a href="{% url 'users:otp_help' %}" class="btn btn-white btn-lg" data-i18n="hero_btn_how">Qanday ishlaydi</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hero-slides -->
+
+  <!-- Arrow controls -->
+  <button class="hero-arrow prev" aria-label="Oldingi">
+    <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="hero-arrow next" aria-label="Keyingi">
+    <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+
+  <!-- Dots -->
+  <div class="hero-dots" role="tablist" aria-label="Slide navigatsiya">
+    <button class="hero-dot active" role="tab" aria-label="Slide 1"></button>
+    <button class="hero-dot" role="tab" aria-label="Slide 2"></button>
+    <button class="hero-dot" role="tab" aria-label="Slide 3"></button>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="hero-stats">
+    <div class="hero-stats-inner">
+      <div class="hero-stat">
+        <div class="num" data-counter="1200" data-suffix="+"><span data-i18n="hero_stat1_num">1200+</span></div>
+        <div class="lbl" data-i18n="hero_stat1_lbl">Turistik joylar</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" data-counter="850" data-suffix="+"><span data-i18n="hero_stat2_num">850+</span></div>
+        <div class="lbl" data-i18n="hero_stat2_lbl">Turar joylar</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num" data-counter="15000" data-suffix="+"><span data-i18n="hero_stat3_num">15K+</span></div>
+        <div class="lbl" data-i18n="hero_stat3_lbl">Foydalanuvchilar</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num"><span data-i18n="hero_stat4_num">4.9★</span></div>
+        <div class="lbl" data-i18n="hero_stat4_lbl">O'rtacha baho</div>
+      </div>
+    </div>
+  </div>
+
+</section><!-- /hero -->
+
+
+<!-- ═══════════════════════════════════════
+     POPULAR PLACES
+════════════════════════════════════════ -->
+<section class="section-gap">
+  <div class="container">
+
+    <div class="section-heading flex justify-between items-center reveal">
+      <div>
+        <span class="label" data-i18n="sec_popular_label">Mashhur joylar</span>
+        <h2 data-i18n="sec_popular_h2">Ko'p tashrif buyurilgan joylar</h2>
+        <p data-i18n="sec_popular_p">O'zbekistonning eng go'zal va tarixiy joylarini kashf eting</p>
+      </div>
+      <a href="{% url 'places:list' %}" class="btn btn-ghost" style="flex-shrink:0" data-i18n="see_all">Hammasini ko'rish</a>
+    </div>
+
+    <div class="grid-cards">
+      {% for place in popular_places %}
+      <article class="card reveal reveal-delay-{{ forloop.counter }}" data-place-id="{{ place.id }}">
+        <div class="card-img-wrap">
+          {% if place.cover_image %}
+            <img src="{{ place.cover_image.image.url }}" alt="{{ place.translated_name }}" loading="lazy">
+          {% else %}
+            <img src="{% static 'images/placeholder-place.jpg' %}" alt="{{ place.translated_name }}" loading="lazy">
+          {% endif %}
+
+          <button class="like-btn {% if place.id in user_liked_places %}active{% endif %}"
+                  data-like-id="{{ place.id }}"
+                  data-like-type="place"
+                  aria-label="Sevimlilarga qo'shish"
+                  {% if not user.is_authenticated %}onclick="window.location='{% url 'users:login' %}'; return false;"{% endif %}>
+            <svg viewBox="0 0 24 24" class="icon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span class="like-count">{{ place.likes_count|default:0 }}</span>
+          </button>
+
+          <span class="card-badge">📍 {{ place.city }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ place.region }} · {{ place.city }}
+          </div>
+          <h3 class="card-title">{{ place.translated_name }}</h3>
+          <p class="card-desc">{{ place.translated_short_description }}</p>
+          <div class="card-actions">
+            <a href="{% url 'places:detail' place.slug %}" class="btn btn-ghost btn-sm" data-i18n="view_info">Batafsil</a>
+            {% if place.is_bookable %}
+              {% if user.is_authenticated %}
+                <a href="{% url 'bookings:create_place_booking' place.id %}" class="btn btn-primary btn-sm" data-i18n="book_now">Bron</a>
+              {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-primary btn-sm" data-i18n="book_now">Bron</a>
+              {% endif %}
+            {% else %}
+              <button class="btn btn-primary btn-sm"
+                      data-basket-id="{{ place.id }}"
+                      data-basket-type="place"
+                      data-basket-name="{{ place.translated_name }}"
+                      data-basket-img="{% if place.cover_image %}{{ place.cover_image.image.url }}{% endif %}"
+                      data-i18n="add_basket">
+                🛒 Savatchaga
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <!-- Skeleton cards while loading -->
+      {% for i in "123" %}
+      <div class="card">
+        <div class="card-img-wrap skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton" style="height:14px;width:60%;margin-bottom:10px;border-radius:4px"></div>
+          <div class="skeleton" style="height:20px;width:80%;margin-bottom:8px;border-radius:4px"></div>
+          <div class="skeleton" style="height:14px;width:100%;margin-bottom:4px;border-radius:4px"></div>
+          <div class="skeleton" style="height:14px;width:70%;border-radius:4px"></div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     TOP ACCOMMODATIONS
+════════════════════════════════════════ -->
+<section class="section-gap" style="background:var(--surface-2)">
+  <div class="container">
+
+    <div class="section-heading flex justify-between items-center reveal">
+      <div>
+        <span class="label" data-i18n="sec_stays_label">Top turar joylar</span>
+        <h2 data-i18n="sec_stays_h2">Premium mehmonxona va dachalar</h2>
+        <p data-i18n="sec_stays_p">Eng yaxshi turar joylarni qidiring va bron qiling</p>
+      </div>
+      <a href="{% url 'accommodations:list' %}" class="btn btn-ghost" style="flex-shrink:0" data-i18n="see_all">Hammasini ko'rish</a>
+    </div>
+
+    <div class="grid-cards">
+      {% for acc in top_accommodations %}
+      <article class="card reveal reveal-delay-{{ forloop.counter }}">
+        <div class="card-img-wrap">
+          {% if acc.cover_image %}
+            <img src="{{ acc.cover_image.image.url }}" alt="{{ acc.translated_name }}" loading="lazy">
+          {% else %}
+            <img src="{% static 'images/placeholder-stay.jpg' %}" alt="{{ acc.translated_name }}" loading="lazy">
+          {% endif %}
+
+          <button class="like-btn {% if acc.id in user_liked_accs %}active{% endif %}"
+                  data-like-id="{{ acc.id }}"
+                  data-like-type="accommodation"
+                  aria-label="Sevimlilarga qo'shish"
+                  {% if not user.is_authenticated %}onclick="window.location='{% url 'users:login' %}'; return false;"{% endif %}>
+            <svg viewBox="0 0 24 24" class="icon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+
+          <span class="card-badge">🏨 {{ acc.get_type_display }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ acc.region }} · {{ acc.city }}
+            &nbsp;·&nbsp;
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            {{ acc.capacity }} <span data-i18n="guests">mehmon</span>
+          </div>
+          <h3 class="card-title">{{ acc.translated_name }}</h3>
+          <p class="card-desc">{{ acc.translated_short_description }}</p>
+          <div class="flex justify-between items-center">
+            <div class="card-price">
+              {{ acc.price_per_night|floatformat:0 }} so'm
+              <small data-i18n="per_night">/ kecha</small>
+            </div>
+            <div class="card-actions">
+              <a href="{% url 'accommodations:detail' acc.slug %}" class="btn btn-ghost btn-sm" data-i18n="view_info">Batafsil</a>
+              <a href="{% url 'bookings:create' acc.id %}" class="btn btn-primary btn-sm" data-i18n="book_now">Bron</a>
+            </div>
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      {% for i in "123" %}
+      <div class="card">
+        <div class="card-img-wrap skeleton"></div>
+        <div class="card-body">
+          <div class="skeleton" style="height:14px;width:60%;margin-bottom:10px;border-radius:4px"></div>
+          <div class="skeleton" style="height:20px;width:80%;margin-bottom:8px;border-radius:4px"></div>
+          <div class="skeleton" style="height:32px;width:100%;border-radius:8px;margin-top:12px"></div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     WHY SAYOHATGA
+════════════════════════════════════════ -->
+<section class="section-gap">
+  <div class="container">
+    <div class="section-heading text-center reveal">
+      <span class="label" data-i18n="sec_why_label">Nima uchun biz?</span>
+      <h2 data-i18n="sec_why_h2">Sayohatga bilan qanday foydalar bor?</h2>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-icon">🛡️</div>
+        <h3 data-i18n="why1_title">Ishonchli platforma</h3>
+        <p data-i18n="why1_desc">Barcha turar joylar tekshirilgan va sertifikatlangan</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-icon">💰</div>
+        <h3 data-i18n="why2_title">Qulay narxlar</h3>
+        <p data-i18n="why2_desc">Bozordagi eng yaxshi narxlarni taklif etamiz</p>
+      </div>
+      <div class="why-card reveal reveal-delay-3">
+        <div class="why-icon">⚡</div>
+        <h3 data-i18n="why3_title">Tez javob</h3>
+        <p data-i18n="why3_desc">24/7 qo'llab-quvvatlash va tez bron tasdiqlash</p>
+      </div>
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-icon">📱</div>
+        <h3 data-i18n="why4_title">Telegram login</h3>
+        <p data-i18n="why4_desc">Xavfsiz Telegram OTP orqali tizimga kiring</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-icon">🌐</div>
+        <h3 data-i18n="why5_title">3 tilda</h3>
+        <p data-i18n="why5_desc">UZ, RU, EN tillarida to'liq qo'llab-quvvatlash</p>
+      </div>
+      <div class="why-card reveal reveal-delay-3">
+        <div class="why-icon">📲</div>
+        <h3 data-i18n="why6_title">Mobil qulay</h3>
+        <p data-i18n="why6_desc">Har qanday qurilmada mukammal ishlaydi</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════ -->
+<section class="section-gap how-works">
+  <div class="container">
+    <div class="section-heading text-center reveal">
+      <span class="label" data-i18n="sec_how_label">Qanday ishlaydi</span>
+      <h2 data-i18n="sec_how_h2">Bron qilish juda oson</h2>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-number">1</div>
+        <h4 data-i18n="step1_title">Ro'yxatdan o'ting</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="step1_desc">
+          Telegram bot orqali tez va oson ro'yxatdan o'ting
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-number">2</div>
+        <h4 data-i18n="step2_title">Joy tanlang</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="step2_desc">
+          Minglab joylar va turar joylardan eng yaxshisini tanlang
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-number">3</div>
+        <h4 data-i18n="step3_title">Bron yuboring</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="step3_desc">
+          Sanalarni kiriting va bron so'rovini yuboring
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-4">
+        <div class="step-number">4</div>
+        <h4 data-i18n="step4_title">Tasdiqlaning</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="step4_desc">
+          Admin tasdiqlaydi va siz xabar olasiz
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CTA BAND
+════════════════════════════════════════ -->
+<section class="section-gap">
+  <div class="container">
+    <div class="cta-band reveal">
+      <h2 data-i18n="cta_title">Bugun sayohatingizni boshlang!</h2>
+      <p data-i18n="cta_desc">O'zbekistonning eng go'zal joylarini kashf eting. Ro'yxatdan o'tish bepul va tez.</p>
+      <div class="actions">
+        <a href="{% url 'users:register' %}" class="btn btn-white btn-lg" data-i18n="cta_btn1">Bepul ro'yxatdan o'tish</a>
+        <a href="{% url 'places:list' %}" class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.4)" data-i18n="cta_btn2">Joylarni ko'rish</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

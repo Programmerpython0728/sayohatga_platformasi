@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Bron tasdiqlash{% endblock %}
+{% block content %}
+<div class="container" style="padding:60px 24px;max-width:540px;text-align:center">
+
+  {% if booking.status == 'confirmed' %}
+    <div style="font-size:4rem;margin-bottom:16px">✅</div>
+    <h1 class="display" style="font-size:1.8rem;margin-bottom:12px;color:var(--primary)">Bron tasdiqlandi!</h1>
+    <p style="color:var(--text-2);margin-bottom:32px">
+      {{ booking.accommodation.translated_name }} uchun broningiz muvaffaqiyatli tasdiqlandi.
+    </p>
+  {% elif booking.status == 'canceled' %}
+    <div style="font-size:4rem;margin-bottom:16px">❌</div>
+    <h1 class="display" style="font-size:1.8rem;margin-bottom:12px;color:#ef4444">Bron bekor qilindi</h1>
+    <p style="color:var(--text-2);margin-bottom:32px">
+      {{ booking.accommodation.translated_name }} uchun broningiz bekor qilindi.
+    </p>
+  {% else %}
+    <div style="font-size:4rem;margin-bottom:16px">⏳</div>
+    <h1 class="display" style="font-size:1.8rem;margin-bottom:12px">So'rov yuborildi!</h1>
+    <p style="color:var(--text-2);margin-bottom:32px">
+      Broningiz ko'rib chiqilmoqda. Tez orada javob olasiz.
+    </p>
+  {% endif %}
+
+  <!-- Booking summary -->
+  <div style="background:var(--surface-2);border-radius:var(--radius-xl);padding:24px;margin-bottom:28px;text-align:left;border:1px solid var(--border)">
+    <div class="booking-info-row">
+      <span class="label">🏨 Joy</span>
+      <span class="value">{{ booking.accommodation.translated_name }}</span>
+    </div>
+    <div class="booking-info-row">
+      <span class="label">📅 Kelish</span>
+      <span class="value">{{ booking.date_from|date:"d M Y" }}</span>
+    </div>
+    <div class="booking-info-row">
+      <span class="label">📅 Ketish</span>
+      <span class="value">{{ booking.date_to|date:"d M Y" }}</span>
+    </div>
+    <div class="booking-info-row">
+      <span class="label">👥 Mehmonlar</span>
+      <span class="value">{{ booking.guests }}</span>
+    </div>
+    <div class="booking-info-row" style="border-bottom:none">
+      <span class="label">📌 Status</span>
+      <span class="badge
+        {% if booking.status == 'confirmed' %}badge-confirmed
+        {% elif booking.status == 'canceled' %}badge-canceled
+        {% else %}badge-pending{% endif %}">
+        {{ booking.get_status_display }}
+      </span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-lg">📊 Kabinet</a>
+    <a href="{% url 'accommodations:list' %}" class="btn btn-ghost btn-lg">Boshqa joy</a>
+  </div>
+
+</div>
+{% endblock %}

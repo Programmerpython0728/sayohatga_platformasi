@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Kabinet{% endblock %}
+{% block content %}
+<div class="container">
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <aside class="dash-sidebar">
+    <div class="dash-user-panel">
+      <div class="dash-avatar">
+        {{ user.full_name|first|upper|default:"U" }}
+      </div>
+      <div class="dash-user-name">{{ user.full_name|default:"Foydalanuvchi" }}</div>
+      <div class="dash-user-phone">{{ user.phone }}</div>
+    </div>
+
+    <nav class="dash-nav" aria-label="Dashboard menyu">
+      <a href="{% url 'users:dashboard' %}" class="dash-nav-link active">
+        📊 <span data-i18n="dash_bookings">Bronlarim</span>
+      </a>
+      <a href="#liked" class="dash-nav-link" onclick="document.getElementById('liked').scrollIntoView({behavior:'smooth'});return false">
+        ❤️ <span>Sevimlilar</span>
+      </a>
+      <a href="{% url 'users:profile' %}" class="dash-nav-link">
+        👤 <span data-i18n="nav_profile">Profil</span>
+      </a>
+      <a href="{% url 'basket:view' %}" class="dash-nav-link">
+        🛒 <span data-i18n="nav_basket">Savatcha</span>
+      </a>
+      <a href="{% url 'places:list' %}" class="dash-nav-link">
+        🌍 <span>Kashf etish</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="dash-main">
+
+    <!-- My Bookings -->
+    <section class="dash-section" id="bookings">
+      <div class="dash-section-head">
+        <h3 data-i18n="dash_bookings">Bronlarim</h3>
+        <a href="{% url 'accommodations:list' %}" class="btn btn-ghost btn-sm">+ Yangi bron</a>
+      </div>
+      <div class="dash-section-body">
+        {% if bookings %}
+          {% for booking in bookings %}
+          <div class="booking-row">
+            <div>
+              <div class="title">{{ booking.accommodation.translated_name }}</div>
+              <div class="dates">
+                📅 {{ booking.date_from|date:"d M Y" }} — {{ booking.date_to|date:"d M Y" }}
+                &nbsp;·&nbsp; 👥 {{ booking.guests }} mehmon
+              </div>
+            </div>
+
+            <span class="badge
+              {% if booking.status == 'confirmed' %}badge-confirmed
+              {% elif booking.status == 'pending' %}badge-pending
+              {% elif booking.status == 'cancelled' %}badge-canceled
+              {% else %}badge-info{% endif %}">
+              {% if booking.status == 'confirmed' %}✅ Tasdiqlangan
+              {% elif booking.status == 'pending' %}⏳ Kutilmoqda
+              {% elif booking.status == 'cancelled' %}❌ Bekor qilingan
+              {% else %}{{ booking.get_status_display }}
+              {% endif %}
+            </span>
+
+            {% if booking.status == 'pending' %}
+            <form method="POST" action="{% url 'bookings:cancel_booking' booking.id %}" style="display:inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm cancel-booking-btn"
+                      style="background:var(--surface-2);color:#ef4444;border:1.5px solid #ef4444"
+                      data-i18n="dash_cancel">Bekor qilish</button>
+            </form>
+            {% else %}
+            <div></div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:40px 0">
+            <div class="icon">📋</div>
+            <p data-i18n="dash_no_book">Bronlar yo'q</p>
+            <a href="{% url 'accommodations:list' %}" class="btn btn-primary btn-sm" style="margin-top:12px">
+              Turar joy topish
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h3>Turistik joy bronlari</h3>
+        <a href="{% url 'places:list' %}" class="btn btn-ghost btn-sm">+ Joy tanlash</a>
+      </div>
+      <div class="dash-section-body">
+        {% if place_bookings %}
+          {% for booking in place_bookings %}
+          <div class="booking-row">
+            <div>
+              <div class="title">{{ booking.place.translated_name }}</div>
+              <div class="dates">
+                📅 {{ booking.visit_date|date:"d M Y" }}
+                &nbsp;·&nbsp; 👥 {{ booking.visitors }} tashrifchi
+              </div>
+            </div>
+
+            <span class="badge
+              {% if booking.status == 'confirmed' %}badge-confirmed
+              {% elif booking.status == 'pending' %}badge-pending
+              {% elif booking.status == 'cancelled' %}badge-canceled
+              {% else %}badge-info{% endif %}">
+              {% if booking.status == 'confirmed' %}✅ Tasdiqlangan
+              {% elif booking.status == 'pending' %}⏳ Kutilmoqda
+              {% elif booking.status == 'cancelled' %}❌ Bekor qilingan
+              {% else %}{{ booking.get_status_display }}
+              {% endif %}
+            </span>
+
+            <a href="{% url 'places:detail' booking.place.slug %}" class="btn btn-ghost btn-sm">Batafsil</a>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state" style="padding:32px 0">
+            <div class="icon">🎟️</div>
+            <p>Turistik joy bronlari yo'q</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Liked Places -->
+    <section class="dash-section" id="liked">
+      <div class="dash-section-head">
+        <h3 data-i18n="dash_liked_p">❤️ Sevimli joylar</h3>
+        <a href="{% url 'places:list' %}" class="btn btn-ghost btn-sm">Barchasini ko'rish</a>
+      </div>
+      <div class="dash-section-body">
+        {% if liked_places %}
+          <div class="grid-cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+            {% for place in liked_places %}
+            <div class="card" style="font-size:.875rem">
+              <div class="card-img-wrap" style="aspect-ratio:16/9">
+                {% if place.cover_image %}
+                  <img src="{{ place.cover_image.image.url }}" alt="{{ place.translated_name }}" loading="lazy">
+                {% else %}
+                  <img src="{% static 'images/placeholder-place.jpg' %}" alt="{{ place.translated_name }}" loading="lazy">
+                {% endif %}
+              </div>
+              <div class="card-body" style="padding:14px">
+                <div class="card-meta" style="font-size:.75rem">📍 {{ place.city }}</div>
+                <div class="card-title" style="font-size:.95rem">{{ place.translated_name }}</div>
+                <a href="{% url 'places:detail' place.slug %}" class="btn btn-ghost btn-sm w-full" style="margin-top:10px" data-i18n="view_info">Batafsil</a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state" style="padding:32px 0">
+            <div class="icon">❤️</div>
+            <p data-i18n="dash_no_liked">Sevimlilarga hech narsa qo'shilmagan</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Liked Accommodations -->
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h3 data-i18n="dash_liked_s">❤️ Sevimli turar joylar</h3>
+        <a href="{% url 'accommodations:list' %}" class="btn btn-ghost btn-sm">Barchasini ko'rish</a>
+      </div>
+      <div class="dash-section-body">
+        {% if liked_accommodations %}
+          <div class="grid-cards" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+            {% for acc in liked_accommodations %}
+            <div class="card" style="font-size:.875rem">
+              <div class="card-img-wrap" style="aspect-ratio:16/9">
+                {% if acc.cover_image %}
+                  <img src="{{ acc.cover_image.image.url }}" alt="{{ acc.translated_name }}" loading="lazy">
+                {% else %}
+                  <img src="{% static 'images/placeholder-stay.jpg' %}" alt="{{ acc.translated_name }}" loading="lazy">
+                {% endif %}
+              </div>
+              <div class="card-body" style="padding:14px">
+                <div class="card-meta" style="font-size:.75rem">🏨 {{ acc.get_type_display }}</div>
+                <div class="card-title" style="font-size:.95rem">{{ acc.translated_name }}</div>
+                <div style="color:var(--primary);font-weight:800;font-size:.95rem;margin-bottom:10px">
+                  {{ acc.price_per_night|floatformat:0 }} so'm<small style="font-size:.7rem;font-weight:500;color:var(--text-3)">/kecha</small>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <a href="{% url 'accommodations:detail' acc.slug %}" class="btn btn-ghost btn-sm" style="flex:1" data-i18n="view_info">Info</a>
+                  <a href="{% url 'bookings:create_booking' acc.id %}" class="btn btn-primary btn-sm" style="flex:1" data-i18n="book_now">Bron</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state" style="padding:32px 0">
+            <div class="icon">🏨</div>
+            <p data-i18n="dash_no_liked">Sevimlilarga hech narsa qo'shilmagan</p>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="dash-section">
+      <div class="dash-section-head">
+        <h3 data-i18n="dash_quick">Tezkor havolalar</h3>
+      </div>
+      <div class="dash-section-body">
+        <div class="quick-links">
+          <a href="{% url 'users:profile' %}" class="quick-link">
+            <div class="ql-icon">👤</div>
+            <div class="ql-label" data-i18n="nav_profile">Profil</div>
+          </a>
+          <a href="{% url 'basket:view' %}" class="quick-link">
+            <div class="ql-icon">🛒</div>
+            <div class="ql-label" data-i18n="nav_basket">Savatcha</div>
+          </a>
+          <a href="{% url 'places:list' %}" class="quick-link">
+            <div class="ql-icon">🌍</div>
+            <div class="ql-label">Joylar</div>
+          </a>
+          <a href="{% url 'accommodations:list' %}" class="quick-link">
+            <div class="ql-icon">🏨</div>
+            <div class="ql-label">Turar joylar</div>
+          </a>
+          <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=sayohatga' }}" target="_blank" class="quick-link">
+            <div class="ql-icon">📱</div>
+            <div class="ql-label">Telegram</div>
+          </a>
+          <a href="{% url 'users:logout' %}" class="quick-link" style="color:#ef4444">
+            <div class="ql-icon">🚪</div>
+            <div class="ql-label" data-i18n="nav_logout" style="color:#ef4444">Chiqish</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</div>
+{% endblock %}

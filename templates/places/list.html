@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% block page_title %}Turistik joylar{% endblock %}{% endblock %}
+
+{% block content %}
+
+<div class="list-page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+      <span class="sep">›</span>
+      <span class="current" data-i18n="places_title">Turistik joylar</span>
+    </nav>
+    <h1 data-i18n="places_title">Turistik joylar</h1>
+    <p data-i18n="places_desc">O'zbekistonning go'zal turistik joylarini kashf eting</p>
+    <div class="result-count">
+      {% if places %}
+        <strong>{{ places.paginator.count }}</strong> ta joy topildi
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container section-gap-sm">
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <form method="GET" action="" id="filter-form">
+      <div class="filter-grid">
+        <div class="form-group" style="margin:0">
+          <input type="text" name="q" value="{{ request.GET.q }}"
+                 class="form-control" data-i18n="search_ph" placeholder="Qidirish..."
+                 aria-label="Qidirish">
+        </div>
+        <div class="form-group" style="margin:0">
+          <select name="region" id="filter-region" class="form-control" aria-label="Viloyat">
+            <option value="" data-i18n="all_regions">Barcha viloyatlar</option>
+            {% for region in regions %}
+              <option value="{{ region.id }}" {% if request.GET.region == region.id|stringformat:"s" %}selected{% endif %}>
+                {{ region.translated_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <select name="city" id="filter-city" class="form-control" aria-label="Shahar">
+            <option value="" data-i18n="all_cities">Barcha shaharlar</option>
+            {% for city in cities %}
+              <option value="{{ city.id }}"
+                      data-region="{{ city.region_id }}"
+                      {% if request.GET.city == city.id|stringformat:"s" %}selected{% endif %}>
+                {{ city.translated_name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" data-i18n="filter_btn">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="21" x2="16.65" y2="16.65"/><circle cx="11" cy="11" r="8"/></svg>
+          Filter
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Cards -->
+  {% if places %}
+    <div class="grid-cards">
+      {% for place in places %}
+      <article class="card reveal">
+        <div class="card-img-wrap">
+          {% if place.cover_image %}
+            <img src="{{ place.cover_image.image.url }}" alt="{{ place.translated_name }}" loading="lazy">
+          {% else %}
+            <img src="{% static 'images/placeholder-place.jpg' %}" alt="{{ place.translated_name }}" loading="lazy">
+          {% endif %}
+
+          <button class="like-btn {% if place.id in user_liked_places %}active{% endif %}"
+                  data-like-id="{{ place.id }}"
+                  data-like-type="place"
+                  aria-label="Sevimlilarga qo'shish"
+                  {% if not user.is_authenticated %}onclick="window.location='{% url 'users:login' %}'; return false;"{% endif %}>
+            <svg viewBox="0 0 24 24" class="icon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <span class="like-count">{{ place.likes_count|default:0 }}</span>
+          </button>
+          <span class="card-badge">📍 {{ place.city }}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            📍 {{ place.region }} · {{ place.city }}
+          </div>
+          <h3 class="card-title">{{ place.translated_name }}</h3>
+          <p class="card-desc">{{ place.translated_short_description }}</p>
+          <div class="card-actions">
+            <a href="{% url 'places:detail' place.slug %}" class="btn btn-ghost btn-sm" data-i18n="view_info">Batafsil</a>
+            {% if place.is_bookable %}
+              {% if user.is_authenticated %}
+                <a href="{% url 'bookings:create_place_booking' place.id %}" class="btn btn-primary btn-sm">Bron</a>
+              {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-primary btn-sm">Bron</a>
+              {% endif %}
+            {% else %}
+              <button class="btn btn-primary btn-sm"
+                      data-basket-id="{{ place.id }}"
+                      data-basket-type="place"
+                      data-basket-name="{{ place.translated_name }}"
+                      data-i18n="add_basket">🛒 Savatchaga</button>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if places.has_other_pages %}
+    <nav class="pagination" aria-label="Sahifalar">
+      {% if places.has_previous %}
+        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ places.previous_page_number }}"
+           class="page-btn" aria-label="Oldingi">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+      {% endif %}
+
+      {% for num in places.paginator.page_range %}
+        {% if places.number == num %}
+          <span class="page-btn active" aria-current="page">{{ num }}</span>
+        {% elif num > places.number|add:'-3' and num < places.number|add:'3' %}
+          <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ num }}"
+             class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if places.has_next %}
+        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ places.next_page_number }}"
+           class="page-btn" aria-label="Keyingi">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">🔍</div>
+      <h3 data-i18n="no_results">Natija topilmadi</h3>
+      <p data-i18n="no_results_desc">Boshqa kalit so'z yoki filter sinab ko'ring</p>
+      <div class="actions">
+        <a href="{% url 'places:list' %}" class="btn btn-ghost">Barcha joylar</a>
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+
+{# ============================================================ #}
+{# PLACE DETAIL — places/detail.html                           #}
+{# ============================================================ #}
+{% comment %}DETAIL TEMPLATE BELOW — copy to places/detail.html{% endcomment %}

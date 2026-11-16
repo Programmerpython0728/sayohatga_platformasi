@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kirish{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="logo-mark" style="margin:0 auto 12px;width:52px;height:52px;font-size:1.4rem">✈️</div>
+      <h1 class="auth-title display" data-i18n="login_title">Kirish</h1>
+      <p class="auth-subtitle" data-i18n="login_subtitle">Hisobingizga kiring</p>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-error">
+      <span>⚠️</span>
+      <span>{{ form.non_field_errors }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Password Login -->
+    <form method="POST" action="{% url 'users:login' %}" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="login_type" value="password">
+
+      <div class="form-group">
+        <label class="form-label" for="id_phone" data-i18n="login_phone">Telefon raqam</label>
+        <input type="tel" id="id_phone" name="phone"
+               class="form-control {% if form.phone_number.errors %}is-error{% endif %}"
+               value="{{ form.phone_number.value|default:'' }}"
+               placeholder="+998 90 123 45 67"
+               autocomplete="tel" required aria-required="true">
+        {% if form.phone_number.errors %}
+          <div class="form-error">⚠️ {{ form.phone_number.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_password" data-i18n="login_password">Parol</label>
+        <div style="position:relative">
+          <input type="password" id="id_password" name="password"
+                 class="form-control {% if form.password.errors %}is-error{% endif %}"
+                 placeholder="••••••••"
+                 autocomplete="current-password" required aria-required="true">
+          <button type="button"
+                  onclick="const p=document.getElementById('id_password');p.type=p.type==='password'?'text':'password'"
+                  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-3);background:none;border:none;cursor:pointer;font-size:1rem"
+                  aria-label="Parolni ko'rsatish">👁</button>
+        </div>
+        {% if form.password.errors %}
+          <div class="form-error">⚠️ {{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" data-i18n="login_btn">
+        Kirish
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="auth-divider">
+      <span data-i18n="login_or">yoki</span>
+    </div>
+
+    <!-- Telegram Login -->
+    <div class="tg-login-box">
+      <div class="tg-icon">📱</div>
+      <h4 data-i18n="login_tg_title">Telegram orqali kirish</h4>
+      <p data-i18n="login_tg_desc">Telegram botdan OTP kod oling va kirish qiling</p>
+
+      <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=login' }}"
+         target="_blank" rel="noopener"
+         class="btn w-full" style="background:linear-gradient(135deg,#229ed9,#1a8dc8);color:#fff;margin-bottom:12px"
+         data-i18n="login_tg_step">
+        📲 Telegram botni ochish
+      </a>
+
+      <form method="POST" action="{% url 'users:login' %}" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="login_type" value="otp">
+        <div class="form-group" style="margin-bottom:12px">
+          <input type="tel" name="phone" class="form-control {% if tg_form.phone_number.errors %}is-error{% endif %}"
+                 value="{{ tg_form.phone_number.value|default:'' }}"
+                 placeholder="+998 90 123 45 67" autocomplete="tel" required>
+          {% if tg_form.phone_number.errors %}<div class="form-error">⚠️ {{ tg_form.phone_number.errors.0 }}</div>{% endif %}
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <input type="text" name="otp_code" class="form-control {% if tg_form.telegram_code.errors %}is-error{% endif %}"
+                 value="{{ tg_form.telegram_code.value|default:'' }}"
+                 placeholder="123456" maxlength="6"
+                 data-i18n="login_otp" autocomplete="one-time-code" required>
+          {% if tg_form.telegram_code.errors %}<div class="form-error">⚠️ {{ tg_form.telegram_code.errors.0 }}</div>{% endif %}
+        </div>
+        <button type="submit" class="btn btn-ghost w-full" data-i18n="login_tg_btn">
+          Telegram OTP bilan kirish
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer links -->
+    <div style="text-align:center;margin-top:20px;font-size:.875rem;color:var(--text-3)">
+      <a href="{% url 'users:otp_help' %}" style="color:var(--primary)">OTP yo'riqnomasi</a>
+      &nbsp;·&nbsp;
+      <span data-i18n="login_no_acc">Hisobingiz yo'qmi?</span>
+      <a href="{% url 'users:register' %}" style="color:var(--primary);font-weight:700;margin-left:4px"
+         data-i18n="login_register">Ro'yxatdan o'tish</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

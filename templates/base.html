@@ -1,0 +1,299 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ current_site_language|default:'uz' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block meta_desc %}Sayohatga — O'zbekiston bo'yicha eng qulay turistik platforma. Joylar, mehmonxonalar va bron bir joyda.{% endblock %}">
+  <title>{% block title %}Sayohatga{% endblock %} | Sayohatga</title>
+
+  <!-- Canonical + SEO -->
+  <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+  <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Sayohatga">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:locale" content="{% block og_locale %}uz_UZ{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{% block title_og %}Sayohatga{% endblock %} | Sayohatga{% endblock %}">
+  <meta property="og:description" content="{% block og_desc %}Sayohatga — O'zbekiston bo'yicha eng qulay turistik platforma.{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.jpg' %}{% endblock %}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}Sayohatga{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_desc %}O'zbekiston bo'yicha eng qulay turistik platforma.{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-default.jpg' %}{% endblock %}">
+
+  {% block structured_data %}{% endblock %}
+
+  <!-- Fonts (async, non-render-blocking) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap">
+  </noscript>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230d9488'/><text x='6' y='23' font-size='20'>✈</text></svg>">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Skip to content (klaviatura foydalanuvchilari uchun) -->
+<a href="#main-content" class="skip-link" data-i18n="skip_to_content">Kontentga o'tish</a>
+
+<!-- Django messages hidden for JS Toast pickup -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="django-message" data-type="{{ message.tags }}" style="display:none">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header class="site-header" role="banner">
+  <div class="container">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="site-logo" aria-label="Sayohatga — Bosh sahifa">
+        <div class="logo-mark">✈️</div>
+        <div class="logo-text">
+          <div class="brand">Sayohatga</div>
+          <div class="tagline">O'zbekiston Turizmi</div>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="site-nav" role="navigation" aria-label="Asosiy menyu">
+        <a href="{% url 'places:list' %}"
+           class="nav-link {% if request.resolver_match.namespace == 'places' %}active{% endif %}"
+           data-i18n="nav_places">Joylar</a>
+
+        <a href="{% url 'accommodations:list' %}"
+           class="nav-link {% if request.resolver_match.namespace == 'accommodations' %}active{% endif %}"
+           data-i18n="nav_stays">Turar joylar</a>
+
+        <a href="{% url 'basket:view' %}" class="nav-basket"
+           aria-label="Savatcha">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span data-i18n="nav_basket">Savatcha</span>
+          <span class="basket-badge {% if basket_count %}show{% endif %}">{{ basket_count|default:0 }}</span>
+        </a>
+
+        {% if user.is_authenticated %}
+          <a href="{% url 'users:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+             data-i18n="nav_cabinet">Kabinet</a>
+          <a href="{% url 'users:profile' %}"  class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+             data-i18n="nav_profile">Profil</a>
+        {% endif %}
+      </nav>
+
+      <!-- Right controls -->
+      <div class="header-auth">
+        <!-- Language -->
+        <div class="lang-pills" role="group" aria-label="Til tanlash">
+          <a class="lang-btn {% if current_site_language == 'uz' %}active{% endif %}"
+             data-lang="uz"
+             href="{% url 'core:set_site_language' 'uz' %}?next={{ request.get_full_path|urlencode }}"
+             aria-label="O'zbek tili">UZ</a>
+          <a class="lang-btn {% if current_site_language == 'ru' %}active{% endif %}"
+             data-lang="ru"
+             href="{% url 'core:set_site_language' 'ru' %}?next={{ request.get_full_path|urlencode }}"
+             aria-label="Rus tili">RU</a>
+          <a class="lang-btn {% if current_site_language == 'en' %}active{% endif %}"
+             data-lang="en"
+             href="{% url 'core:set_site_language' 'en' %}?next={{ request.get_full_path|urlencode }}"
+             aria-label="English">EN</a>
+        </div>
+
+        <!-- Theme toggle -->
+        <button class="theme-toggle" aria-label="Mavzu almashtirish" title="Kun/Tun rejimi">
+          <span class="theme-icon">🌙</span>
+        </button>
+
+        {% if user.is_authenticated %}
+          <div class="user-chip">
+            <div class="user-avatar">{{ user.full_name|first|upper|default:user.phone|first }}</div>
+            <span>{{ user.full_name|truncatechars:12|default:user.phone }}</span>
+          </div>
+          <a href="{% url 'users:logout' %}" class="btn btn-ghost btn-sm" data-i18n="nav_logout">Chiqish</a>
+        {% else %}
+          <a href="{% url 'users:login' %}"    class="btn btn-ghost btn-sm" data-i18n="nav_login">Kirish</a>
+          <a href="{% url 'users:register' %}" class="btn btn-primary btn-sm" data-i18n="nav_register">Ro'yxatdan o'tish</a>
+        {% endif %}
+      </div>
+
+      <!-- Hamburger (mobile) -->
+      <button class="hamburger" aria-label="Menyu" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span></span>
+      </button>
+
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Nav Drawer -->
+<div class="mobile-nav" id="mobile-nav" role="dialog" aria-label="Mobil menyu">
+  <a href="{% url 'places:list' %}"         class="nav-link" data-i18n="nav_places">Joylar</a>
+  <a href="{% url 'accommodations:list' %}" class="nav-link" data-i18n="nav_stays">Turar joylar</a>
+  <a href="{% url 'basket:view' %}"         class="nav-link" data-i18n="nav_basket">Savatcha</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'users:dashboard' %}" class="nav-link" data-i18n="nav_cabinet">Kabinet</a>
+    <a href="{% url 'users:profile' %}"   class="nav-link" data-i18n="nav_profile">Profil</a>
+  {% endif %}
+
+  <div class="mobile-nav-divider"></div>
+
+  <div class="mobile-lang">
+    <a class="lang-btn {% if current_site_language == 'uz' %}active{% endif %}"
+       data-lang="uz"
+       href="{% url 'core:set_site_language' 'uz' %}?next={{ request.get_full_path|urlencode }}">UZ</a>
+    <a class="lang-btn {% if current_site_language == 'ru' %}active{% endif %}"
+       data-lang="ru"
+       href="{% url 'core:set_site_language' 'ru' %}?next={{ request.get_full_path|urlencode }}">RU</a>
+    <a class="lang-btn {% if current_site_language == 'en' %}active{% endif %}"
+       data-lang="en"
+       href="{% url 'core:set_site_language' 'en' %}?next={{ request.get_full_path|urlencode }}">EN</a>
+    <button class="theme-toggle" style="margin-left:auto;" aria-label="Mavzu">
+      <span class="theme-icon">🌙</span>
+    </button>
+  </div>
+
+  <div class="mobile-nav-divider"></div>
+
+  <div class="mobile-auth">
+    {% if user.is_authenticated %}
+      <div class="user-chip" style="justify-content:center;">
+        <div class="user-avatar">{{ user.full_name|first|upper|default:'U' }}</div>
+        <span>{{ user.full_name|default:user.phone }}</span>
+      </div>
+      <a href="{% url 'users:logout' %}" class="btn btn-ghost w-full" data-i18n="nav_logout">Chiqish</a>
+    {% else %}
+      <a href="{% url 'users:login' %}"    class="btn btn-ghost w-full"   data-i18n="nav_login">Kirish</a>
+      <a href="{% url 'users:register' %}" class="btn btn-primary w-full" data-i18n="nav_register">Ro'yxatdan o'tish</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════ -->
+<main id="main-content" tabindex="-1">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="{% url 'home' %}" class="site-logo" style="margin-bottom:16px">
+          <div class="logo-mark">✈️</div>
+          <div class="logo-text">
+            <div class="brand">Sayohatga</div>
+            <div class="tagline">O'zbekiston Turizmi</div>
+          </div>
+        </a>
+        <p class="footer-desc" data-i18n="footer_about_desc">
+          Sayohatga — O'zbekiston bo'yicha eng qulay turistik platforma.
+          Joylar, turar joylar va bron bir joyda.
+        </p>
+        <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=sayohatga' }}" target="_blank" rel="noopener"
+           class="footer-tg-btn" data-i18n="footer_tg">
+          📱 Telegram botni ochish
+        </a>
+      </div>
+
+      <!-- Useful Links -->
+      <div>
+        <div class="footer-heading" data-i18n="footer_links">Foydali havolalar</div>
+        <ul class="footer-links">
+          <li><a href="{% url 'home' %}">🏠 Bosh sahifa</a></li>
+          <li><a href="{% url 'places:list' %}" data-i18n="nav_places">📍 Joylar</a></li>
+          <li><a href="{% url 'accommodations:list' %}" data-i18n="nav_stays">🏨 Turar joylar</a></li>
+          <li><a href="{% url 'users:otp_help' %}">📱 Telegram OTP</a></li>
+          <li><a href="{% url 'users:register' %}" data-i18n="nav_register">✍️ Ro'yxatdan o'tish</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <div class="footer-heading" data-i18n="footer_contact">Kontakt</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <svg class="ico icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.21 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z"/></svg>
+            <!-- Backend: {{ site_settings.phone }} -->
+            +998 90 123 45 67
+          </div>
+          <div class="footer-contact-item">
+            <svg class="ico icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <!-- Backend: {{ site_settings.email }} -->
+            info@sayohatga.uz
+          </div>
+          <div class="footer-contact-item">
+            <svg class="ico icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <!-- Backend: {{ site_settings.address }} -->
+            Toshkent, O'zbekiston
+          </div>
+        </div>
+      </div>
+
+      <!-- Social -->
+      <div>
+        <div class="footer-heading" data-i18n="footer_social">Ijtimoiy tarmoqlar</div>
+        <div class="social-links">
+          <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=sayohatga' }}" target="_blank" rel="noopener"
+             class="social-btn" aria-label="Telegram" title="Telegram">
+            ✈️
+          </a>
+          <a href="https://instagram.com/YOUR_INSTAGRAM" target="_blank" rel="noopener"
+             class="social-btn" aria-label="Instagram" title="Instagram">
+            📷
+          </a>
+          <a href="https://facebook.com/YOUR_FACEBOOK" target="_blank" rel="noopener"
+             class="social-btn" aria-label="Facebook" title="Facebook">
+            👍
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer bottom -->
+  <div style="border-top:1px solid rgba(255,255,255,.08)">
+    <div class="container">
+      <div class="footer-bottom">
+        <span data-i18n="footer_copy">© 2025 Sayohatga. Barcha huquqlar himoyalangan.</span>
+        <span>Made with ❤️ in Uzbekistan</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+
+{% csrf_token %}
+</body>
+</html>

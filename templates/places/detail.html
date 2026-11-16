@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ place.translated_name }}{% endblock %}
+{% block title_og %}{{ place.translated_name }}{% endblock %}
+{% block meta_desc %}{{ place.translated_short_description|default:place.translated_name }}{% endblock %}
+{% block og_type %}place{% endblock %}
+{% block og_title %}{{ place.translated_name }} — {{ place.city.translated_name }}{% endblock %}
+{% block og_desc %}{{ place.translated_short_description|default:place.translated_name }}{% endblock %}
+{% block twitter_title %}{{ place.translated_name }}{% endblock %}
+{% block twitter_desc %}{{ place.translated_short_description|default:place.translated_name }}{% endblock %}
+{% with cover=images|first %}{% if cover %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}{% endblock %}
+{% endif %}{% endwith %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  "name": "{{ place.translated_name|escapejs }}",
+  "description": "{{ place.translated_short_description|default:place.translated_name|escapejs }}",
+  "url": "{{ request.build_absolute_uri }}",
+  {% with cover=images|first %}{% if cover %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}",{% endif %}{% endwith %}
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ place.city.translated_name|escapejs }}",
+    "addressRegion": "{{ place.city.region.translated_name|escapejs }}",
+    "addressCountry": "UZ"
+  }{% if place.latitude and place.longitude %},
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": {{ place.latitude }},
+    "longitude": {{ place.longitude }}
+  }{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:40px;padding-bottom:80px">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+    <span class="sep">›</span>
+    <a href="{% url 'places:list' %}" data-i18n="nav_places">Joylar</a>
+    <span class="sep">›</span>
+    <span class="current">{{ place.translated_name }}</span>
+  </nav>
+
+  <div class="detail-layout">
+
+    <!-- LEFT: Main content -->
+    <div>
+      <!-- Title + meta -->
+      <h1 class="detail-title display">{{ place.translated_name }}</h1>
+      <div class="detail-meta">
+        <span class="location-pill">📍 {{ place.region }}</span>
+        <span class="location-pill">🏙️ {{ place.city }}</span>
+        <button class="like-btn {% if is_liked %}active{% endif %}"
+                data-like-id="{{ place.id }}"
+                data-like-type="place"
+                aria-label="Sevimlilarga qo'shish"
+                style="position:static;background:var(--surface-2);border:1.5px solid var(--border);width:auto;height:auto;padding:8px 16px;border-radius:var(--radius-full);gap:6px;display:inline-flex;">
+          <svg viewBox="0 0 24 24" class="icon" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          {{ place.likes_count|default:0 }}
+        </button>
+        <button class="btn btn-ghost btn-sm"
+                data-basket-id="{{ place.id }}"
+                data-basket-type="place"
+                data-basket-name="{{ place.translated_name }}"
+                data-i18n="add_basket">🛒 Savatchaga</button>
+      </div>
+
+      <!-- Gallery -->
+      <div class="gallery-main" style="margin-bottom:0">
+        {% if place.images %}
+          <img src="{{ place.images.0.image.url }}" alt="{{ place.translated_name }}" id="gallery-main-img">
+        {% else %}
+          <img src="{% static 'images/placeholder-place.jpg' %}" alt="{{ place.translated_name }}">
+        {% endif %}
+      </div>
+      {% if place.images|length > 1 %}
+      <div class="gallery-thumbs" aria-label="Rasmlar">
+        {% for img in place.images %}
+        <div class="gallery-thumb {% if forloop.first %}active{% endif %}"
+             role="button" tabindex="0"
+             aria-label="Rasm {{ forloop.counter }}">
+          <img src="{{ img.image.url }}" alt="Rasm {{ forloop.counter }}">
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Description -->
+      <div class="detail-desc" style="margin-top:32px">
+        <h2 style="font-size:1.2rem;margin-bottom:16px">Bu joy haqida</h2>
+        {{ place.translated_description|linebreaks }}
+      </div>
+
+      <div class="detail-desc" style="margin-top:32px">
+        <h2 style="font-size:1.2rem;margin-bottom:16px">Lokatsiya</h2>
+        <div style="border-radius:24px;overflow:hidden;border:1px solid var(--border);background:var(--surface-2)">
+          <iframe
+            src="{{ map_embed_url }}"
+            width="100%"
+            height="360"
+            style="border:0;display:block"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div style="margin-top:12px">
+          <a href="{{ map_link_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">
+            📍 Xaritada ochish
+          </a>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div style="margin-top:40px">
+        <h2 style="font-size:1.2rem;margin-bottom:20px" data-i18n="reviews">Sharhlar</h2>
+        {% if place.reviews %}
+        <div class="reviews-grid">
+          {% for review in place.reviews %}
+          <div class="review-card">
+            <div class="review-stars">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}⭐{% endif %}
+              {% endfor %}
+            </div>
+            <p class="review-text">{{ review.comment }}</p>
+            <span class="review-author">— {{ review.user.full_name|default:review.user.phone }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:var(--text-3)" data-i18n="no_reviews">Hali sharh yo'q</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <aside>
+      <div class="booking-panel">
+        <h3 style="font-size:1.1rem;margin-bottom:20px">📍 Joy ma'lumotlari</h3>
+
+        <div style="margin-bottom:16px">
+          <div style="font-size:.8rem;color:var(--text-3);margin-bottom:4px">Viloyat</div>
+          <div style="font-weight:600">{{ place.region }}</div>
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:.8rem;color:var(--text-3);margin-bottom:4px">Shahar</div>
+          <div style="font-weight:600">{{ place.city }}</div>
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:20px 0"></div>
+
+        {% if place.translated_address %}
+        <div style="margin-bottom:16px">
+          <div style="font-size:.8rem;color:var(--text-3);margin-bottom:4px">Manzil</div>
+          <div style="font-weight:600">{{ place.translated_address }}</div>
+        </div>
+        {% endif %}
+
+        {% if place.is_bookable %}
+        <div style="margin-bottom:12px">
+          <a href="{% url 'bookings:create_place_booking' place.id %}"
+             class="btn btn-primary w-full">
+            🎟️ Joyni bron qilish
+          </a>
+        </div>
+        {% endif %}
+
+        <a href="{% url 'accommodations:list' %}?city={{ place.city_id }}"
+           class="btn btn-primary w-full" data-i18n="nearby_stays">
+          🏨 Yaqin turar joylar
+        </a>
+
+        <div style="margin-top:12px">
+          <button class="btn btn-ghost w-full"
+                  data-basket-id="{{ place.id }}"
+                  data-basket-type="place"
+                  data-basket-name="{{ place.translated_name }}"
+                  data-i18n="add_basket">🛒 Savatchaga qo'shish</button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

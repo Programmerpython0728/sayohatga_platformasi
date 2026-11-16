@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card" style="max-width:500px">
+    <div class="auth-logo">
+      <div class="logo-mark" style="margin:0 auto 12px;width:52px;height:52px;font-size:1.4rem">✈️</div>
+      <h1 class="auth-title display" data-i18n="reg_title">Ro'yxatdan o'tish</h1>
+      <p class="auth-subtitle" data-i18n="reg_subtitle">Yangi hisob yarating</p>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-error"><span>⚠️</span><span>{{ form.non_field_errors }}</span></div>
+    {% endif %}
+
+    <!-- Telegram bot hint -->
+    <div class="alert alert-info" style="margin-bottom:20px">
+      <span>📱</span>
+      <div>
+        <strong data-i18n="reg_tg_hint">Telegram botdan OTP oling:</strong>
+        <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=register' }}"
+           target="_blank" rel="noopener"
+           style="color:var(--sky-500);font-weight:700;display:inline-flex;align-items:center;gap:4px;margin-top:4px">
+          <span data-i18n="reg_open_tg">Telegram botni ochish</span> →
+        </a>
+      </div>
+    </div>
+
+    <form method="POST" action="{% url 'users:register' %}" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_phone" data-i18n="reg_phone">Telefon raqam</label>
+        <input type="tel" id="id_phone" name="phone"
+               class="form-control {% if form.phone_number.errors %}is-error{% endif %}"
+               value="{{ form.phone_number.value|default:'' }}"
+               placeholder="+998 90 123 45 67"
+               autocomplete="tel" required>
+        {% if form.phone_number.errors %}<div class="form-error">⚠️ {{ form.phone_number.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_otp_code" data-i18n="reg_otp">Telegram OTP kod</label>
+        <input type="text" id="id_otp_code" name="otp_code"
+               class="form-control {% if form.telegram_code.errors %}is-error{% endif %}"
+               placeholder="123456" maxlength="6"
+               autocomplete="one-time-code" required>
+        {% if form.telegram_code.errors %}<div class="form-error">⚠️ {{ form.telegram_code.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_full_name" data-i18n="reg_fullname">To'liq ism</label>
+        <input type="text" id="id_full_name" name="full_name"
+               class="form-control {% if form.full_name.errors %}is-error{% endif %}"
+               value="{{ form.full_name.value|default:'' }}"
+               placeholder="Alisher Navoiy"
+               autocomplete="name" required>
+        {% if form.full_name.errors %}<div class="form-error">⚠️ {{ form.full_name.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_password1" data-i18n="reg_password">Parol</label>
+        <input type="password" id="id_password1" name="password1"
+               class="form-control {% if form.password1.errors %}is-error{% endif %}"
+               placeholder="••••••••" autocomplete="new-password" required>
+        {% if form.password1.errors %}<div class="form-error">⚠️ {{ form.password1.errors.0 }}</div>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_password2" data-i18n="reg_password2">Parolni takrorlash</label>
+        <input type="password" id="id_password2" name="password2"
+               class="form-control {% if form.password2.errors %}is-error{% endif %}"
+               placeholder="••••••••" autocomplete="new-password" required>
+        {% if form.password2.errors %}<div class="form-error">⚠️ {{ form.password2.errors.0 }}</div>{% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full btn-lg" data-i18n="reg_btn">
+        Ro'yxatdan o'tish
+      </button>
+    </form>
+
+    <div style="text-align:center;margin-top:20px;font-size:.875rem;color:var(--text-3)">
+      <span data-i18n="reg_has_acc">Hisobingiz bormi?</span>
+      <a href="{% url 'users:login' %}" style="color:var(--primary);font-weight:700;margin-left:4px"
+         data-i18n="reg_login">Kirish</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

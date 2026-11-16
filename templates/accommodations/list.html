@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Turar joylar{% endblock %}
+
+{% block content %}
+
+<div class="list-page-header">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+      <span class="sep">›</span>
+      <span class="current" data-i18n="stays_title">Turar joylar</span>
+    </nav>
+    <h1 data-i18n="stays_title">Turar joylar</h1>
+    <p data-i18n="stays_desc">Mehmonxona, dacha va resortlarni qidiring</p>
+    {% if accommodations %}
+      <div class="result-count"><strong>{{ accommodations.paginator.count }}</strong> ta turar joy topildi</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="container section-gap-sm">
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <form method="GET" action="">
+      <div class="filter-grid">
+        <div class="form-group" style="margin:0">
+          <input type="text" name="q" value="{{ request.GET.q }}"
+                 class="form-control" placeholder="Qidirish..." data-i18n="search_ph" aria-label="Qidirish">
+        </div>
+        <div class="form-group" style="margin:0">
+          <select name="type" class="form-control" aria-label="Turi">
+            <option value="" data-i18n="all_types">Barcha turlar</option>
+            {% for val, label in accommodation_types %}
+              <option value="{{ val }}" {% if request.GET.type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <select name="region" id="filter-region" class="form-control" aria-label="Viloyat">
+            <option value="" data-i18n="all_regions">Barcha viloyatlar</option>
+            {% for region in regions %}
+              <option value="{{ region.id }}" {% if request.GET.region == region.id|stringformat:"s" %}selected{% endif %}>{{ region.translated_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <input type="number" name="min_price" value="{{ request.GET.min_price }}"
+                 class="form-control" placeholder="Min narx" data-i18n="filter_min_price" aria-label="Min narx">
+        </div>
+        <div class="form-group" style="margin:0">
+          <input type="number" name="max_price" value="{{ request.GET.max_price }}"
+                 class="form-control" placeholder="Max narx" data-i18n="filter_max_price" aria-label="Max narx">
+        </div>
+        <button type="submit" class="btn btn-primary" data-i18n="filter_btn">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="21" y1="21" x2="16.65" y2="16.65"/><circle cx="11" cy="11" r="8"/></svg>
+          Filter
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Cards -->
+  {% if accommodations %}
+    <div class="grid-cards">
+      {% for acc in accommodations %}
+      <article class="card reveal">
+        <div class="card-img-wrap">
+          {% if acc.cover_image %}
+            <img src="{{ acc.cover_image.image.url }}" alt="{{ acc.translated_name }}" loading="lazy">
+          {% else %}
+            <img src="{% static 'images/placeholder-stay.jpg' %}" alt="{{ acc.translated_name }}" loading="lazy">
+          {% endif %}
+
+          <button class="like-btn {% if acc.id in user_liked_accs %}active{% endif %}"
+                  data-like-id="{{ acc.id }}"
+                  data-like-type="accommodation"
+                  aria-label="Sevimlilarga qo'shish"
+                  {% if not user.is_authenticated %}onclick="window.location='{% url 'users:login' %}'; return false;"{% endif %}>
+            <svg viewBox="0 0 24 24" class="icon"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <span class="card-badge">🏨 {{ acc.get_type_display }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="card-meta">
+            📍 {{ acc.region }} · {{ acc.city }}
+            &nbsp;·&nbsp;
+            👥 {{ acc.capacity }} <span data-i18n="guests">mehmon</span>
+          </div>
+          <h3 class="card-title">{{ acc.translated_name }}</h3>
+          <p class="card-desc">{{ acc.translated_short_description }}</p>
+          <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:10px">
+            <div class="card-price">
+              {{ acc.price_per_night|floatformat:0 }} so'm
+              <small data-i18n="per_night">/ kecha</small>
+            </div>
+            <div class="card-actions">
+              <a href="{% url 'accommodations:detail' acc.slug %}" class="btn btn-ghost btn-sm" data-i18n="view_info">Batafsil</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'bookings:create_booking' acc.id %}" class="btn btn-primary btn-sm" data-i18n="book_now">Bron</a>
+              {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-primary btn-sm" data-i18n="book_now">Bron</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if accommodations.has_other_pages %}
+    <nav class="pagination" aria-label="Sahifalar">
+      {% if accommodations.has_previous %}
+        <a href="?page={{ accommodations.previous_page_number }}" class="page-btn">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+      {% endif %}
+      {% for num in accommodations.paginator.page_range %}
+        {% if accommodations.number == num %}
+          <span class="page-btn active">{{ num }}</span>
+        {% elif num > accommodations.number|add:'-3' and num < accommodations.number|add:'3' %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+      {% if accommodations.has_next %}
+        <a href="?page={{ accommodations.next_page_number }}" class="page-btn">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      {% endif %}
+    </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">🏨</div>
+      <h3 data-i18n="no_results">Natija topilmadi</h3>
+      <p data-i18n="no_results_desc">Boshqa kalit so'z yoki filter sinab ko'ring</p>
+      <div class="actions">
+        <a href="{% url 'accommodations:list' %}" class="btn btn-ghost">Barcha turar joylar</a>
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

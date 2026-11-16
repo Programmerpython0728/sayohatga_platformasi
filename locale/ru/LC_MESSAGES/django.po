@@ -1,0 +1,598 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-18 17:00+0500\n"
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: .\templates\accounts\dashboard.html:4 .\templates\base.html:29
+#: .\templates\base.html:64
+msgid "Dashboard"
+msgstr "Кабинет"
+
+#: .\templates\accounts\dashboard.html:10
+msgid "My bookings"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:11
+msgid "Track your bookings and save favorites with Like."
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:16
+#, fuzzy
+#| msgid "Accommodations"
+msgid "Accommodation"
+msgstr "Жилье"
+
+#: .\templates\accounts\dashboard.html:17
+msgid "Dates"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:18
+#: .\templates\bookings\booking_create.html:41
+msgid "Guests"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:19
+msgid "Status"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:33
+msgid "Confirmed"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:35
+msgid "Cancelled"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:37
+msgid "Pending"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:42
+msgid "Cancel"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:47
+msgid "No bookings yet."
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:52
+msgid "Liked"
+msgstr ""
+
+#: .\templates\accounts\dashboard.html:53
+msgid "Explore more"
+msgstr ""
+
+#: .\templates\accounts\login.html:4 .\templates\accounts\login.html:10
+#: .\templates\accounts\login.html:31 .\templates\accounts\login.html:65
+#: .\templates\accounts\register.html:58 .\templates\base.html:49
+#: .\templates\base.html:67 .\templates\core\home.html:34
+msgid "Login"
+msgstr "Войти"
+
+#: .\templates\accounts\login.html:11
+msgid "Use password or Telegram one-time code."
+msgstr ""
+
+#: .\templates\accounts\login.html:22 .\templates\accounts\login.html:56
+#: .\templates\accounts\register.html:21
+msgid "Phone number"
+msgstr ""
+
+#: .\templates\accounts\login.html:27 .\templates\accounts\register.html:44
+msgid "Password"
+msgstr ""
+
+#: .\templates\accounts\login.html:33
+msgid "No account yet?"
+msgstr ""
+
+#: .\templates\accounts\login.html:34 .\templates\accounts\register.html:4
+#: .\templates\base.html:50 .\templates\base.html:68
+msgid "Register"
+msgstr "Регистрация"
+
+#: .\templates\accounts\login.html:39
+msgid "Login with Telegram code"
+msgstr ""
+
+#: .\templates\accounts\login.html:42
+msgid "Open bot"
+msgstr ""
+
+#: .\templates\accounts\login.html:45 .\templates\accounts\verify.html:21
+msgid "Open instructions"
+msgstr ""
+
+#: .\templates\accounts\login.html:61 .\templates\accounts\register.html:27
+msgid "Telegram code"
+msgstr ""
+
+#: .\templates\accounts\login.html:67 .\templates\accounts\register.html:31
+msgid ""
+"Open the bot, press Start, send your phone number, and copy the 6-digit code "
+"here."
+msgstr ""
+
+#: .\templates\accounts\profile.html:4 .\templates\accounts\profile.html:10
+#: .\templates\base.html:65
+msgid "Profile"
+msgstr ""
+
+#: .\templates\accounts\profile.html:11
+msgid "Update your name and email. Phone is your login."
+msgstr ""
+
+#: .\templates\accounts\profile.html:15
+msgid "Phone"
+msgstr ""
+
+#: .\templates\accounts\profile.html:25
+msgid "Full name"
+msgstr ""
+
+#: .\templates\accounts\profile.html:31
+msgid "Email"
+msgstr ""
+
+#: .\templates\accounts\profile.html:36
+msgid "Save"
+msgstr ""
+
+#: .\templates\accounts\profile.html:37
+#: .\templates\bookings\booking_cancel.html:18
+#: .\templates\bookings\booking_create.html:47
+msgid "Back"
+msgstr ""
+
+#: .\templates\accounts\register.html:10 .\templates\core\home.html:46
+msgid "Create account"
+msgstr ""
+
+#: .\templates\accounts\register.html:11
+msgid "Register with your phone number and verify via Telegram."
+msgstr ""
+
+#: .\templates\accounts\register.html:32
+msgid "Help"
+msgstr ""
+
+#: .\templates\accounts\register.html:37
+msgid "Full name (optional)"
+msgstr ""
+
+#: .\templates\accounts\register.html:49
+msgid "Repeat password"
+msgstr ""
+
+#: .\templates\accounts\register.html:55
+msgid "Continue"
+msgstr ""
+
+#: .\templates\accounts\register.html:57
+msgid "Already have an account?"
+msgstr ""
+
+#: .\templates\accounts\register.html:61
+msgid "How Telegram verification works"
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:4
+#: .\templates\accounts\telegram_help.html:10
+msgid "Telegram verification"
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:11
+msgid "How to receive OTP code in Telegram."
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:16 .\templates\base.html:123
+#: .\templates\base.html:125
+msgid "Open Telegram bot"
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:19
+msgid ""
+"Create a Telegram bot via @BotFather and set TELEGRAM_BOT_TOKEN in .env."
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:20
+msgid "Run: python manage.py run_telegram_bot"
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:21
+msgid ""
+"Open the bot in Telegram, press Start, and send your phone number (example: "
+"+998901234567)."
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:22
+msgid ""
+"Register on the website with the same phone number or use Telegram login."
+msgstr ""
+
+#: .\templates\accounts\telegram_help.html:24
+msgid ""
+"If Telegram is not configured and DEBUG=True, OTP is printed in server logs."
+msgstr ""
+
+#: .\templates\accounts\verify.html:4
+msgid "Verify phone"
+msgstr ""
+
+#: .\templates\accounts\verify.html:10
+msgid "Verify your phone"
+msgstr ""
+
+#: .\templates\accounts\verify.html:12
+#, python-format
+msgid "We sent a 6-digit code for %(pending_phone)s."
+msgstr ""
+
+#: .\templates\accounts\verify.html:19 .\templates\accounts\verify.html:23
+msgid "Telegram mode"
+msgstr ""
+
+#: .\templates\accounts\verify.html:20
+msgid ""
+"If you didn't receive the code, open the bot and share your phone number."
+msgstr ""
+
+#: .\templates\accounts\verify.html:24
+msgid "OTP is sent to the configured static chat id."
+msgstr ""
+
+#: .\templates\accounts\verify.html:27
+msgid "Telegram is not configured."
+msgstr ""
+
+#: .\templates\accounts\verify.html:28
+msgid "In DEBUG mode the code is printed in server logs."
+msgstr ""
+
+#: .\templates\accounts\verify.html:39
+msgid "Verification code"
+msgstr ""
+
+#: .\templates\accounts\verify.html:44
+msgid "Verify"
+msgstr ""
+
+#: .\templates\accounts\verify.html:50
+msgid "Resend code"
+msgstr ""
+
+#: .\templates\base.html:26 .\templates\base.html:61
+#: .\templates\catalog\place_detail.html:10
+#: .\templates\catalog\place_list.html:4
+msgid "Places"
+msgstr "Места"
+
+#: .\templates\base.html:27 .\templates\base.html:62
+#: .\templates\catalog\accommodation_detail.html:10
+#: .\templates\catalog\accommodation_list.html:4
+#: .\templates\catalog\accommodation_list.html:10
+msgid "Accommodations"
+msgstr "Жилье"
+
+#: .\templates\base.html:38
+msgid "Language"
+msgstr "Язык"
+
+#: .\templates\base.html:47
+msgid "Logout"
+msgstr "Выйти"
+
+#: .\templates\base.html:91
+msgid "Biz haqimizda"
+msgstr ""
+
+#: .\templates\base.html:93
+msgid ""
+"Sayohatga — O'zbekiston bo'ylab joylar va turar joylarni topish, bron qilish "
+"va sayohatni oson rejalash platformasi."
+msgstr ""
+
+#: .\templates\base.html:98
+msgid "Kontakt"
+msgstr ""
+
+#: .\templates\base.html:102
+msgid "Samarqand, O'zbekiston"
+msgstr ""
+
+#: .\templates\base.html:107
+msgid "Foydali havolalar"
+msgstr ""
+
+#: .\templates\base.html:109
+msgid "To'lov usullari"
+msgstr ""
+
+#: .\templates\base.html:110
+msgid "Qaytarish"
+msgstr ""
+
+#: .\templates\base.html:111
+msgid "Oferta"
+msgstr ""
+
+#: .\templates\base.html:116
+msgid "Ijtimoiy tarmoqlar"
+msgstr ""
+
+#: .\templates\base.html:132
+msgid "Sayohatga. Barcha huquqlar himoyalangan."
+msgstr ""
+
+#: .\templates\bookings\booking_cancel.html:4
+#: .\templates\bookings\booking_cancel.html:10
+msgid "Cancel booking"
+msgstr ""
+
+#: .\templates\bookings\booking_cancel.html:16
+msgid "Are you sure you want to cancel this booking?"
+msgstr ""
+
+#: .\templates\bookings\booking_cancel.html:17
+msgid "Yes, cancel"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:4
+#: .\templates\catalog\accommodation_detail.html:69
+msgid "Booking"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:10
+msgid "Booking request"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:17
+msgid "Price"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:17
+#: .\templates\catalog\accommodation_detail.html:24
+#: .\templates\catalog\accommodation_list.html:67
+#: .\templates\core\home.html:114
+msgid "night"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:18
+msgid "Capacity"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:18
+#: .\templates\catalog\accommodation_detail.html:25
+#: .\templates\catalog\accommodation_list.html:70
+msgid "guests"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:29
+msgid "From"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:34
+msgid "To"
+msgstr ""
+
+#: .\templates\bookings\booking_create.html:46
+msgid "Send request"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:32
+#: .\templates\catalog\accommodation_list.html:61
+#: .\templates\catalog\place_detail.html:32
+#: .\templates\catalog\place_list.html:52
+msgid "Like"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:62
+#: .\templates\catalog\place_detail.html:62
+msgid "Description will be added soon."
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:70
+msgid "Choose dates and send a booking request."
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:71
+msgid "Book now"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:73
+msgid "You need to login to book."
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:78
+#: .\templates\catalog\place_detail.html:69
+msgid "Location"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:79
+#: .\templates\catalog\place_detail.html:70
+msgid "City"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:80
+#: .\templates\catalog\place_detail.html:71
+msgid "Region"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:82
+#: .\templates\catalog\place_detail.html:73
+msgid "Address"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:90
+#: .\templates\catalog\place_detail.html:86
+msgid "Reviews"
+msgstr ""
+
+#: .\templates\catalog\accommodation_detail.html:100
+#: .\templates\catalog\place_detail.html:96
+msgid "No comment."
+msgstr "Без комментария."
+
+#: .\templates\catalog\accommodation_list.html:11
+msgid "Hotels, dacha and resorts across Uzbekistan."
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:16
+#: .\templates\catalog\place_list.html:16
+msgid "Search..."
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:23
+#: .\templates\catalog\place_list.html:18
+msgid "All regions"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:29
+#: .\templates\catalog\place_list.html:24
+msgid "All cities"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:36
+msgid "Min price (UZS)"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:37
+msgid "Max price (UZS)"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:38
+#: .\templates\catalog\place_list.html:29
+msgid "Apply"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:39
+#: .\templates\catalog\place_list.html:30
+msgid "Reset"
+msgstr ""
+
+#: .\templates\catalog\accommodation_list.html:76
+#: .\templates\catalog\place_list.html:66
+msgid "No results."
+msgstr ""
+
+#: .\templates\catalog\place_detail.html:78
+msgid "Plan your trip"
+msgstr ""
+
+#: .\templates\catalog\place_detail.html:79
+msgid "Find stays nearby"
+msgstr ""
+
+#: .\templates\catalog\place_list.html:10
+msgid "Tourist places"
+msgstr ""
+
+#: .\templates\catalog\place_list.html:11
+msgid "Find historical places, landmarks and cities."
+msgstr ""
+
+#: .\templates\core\home.html:14
+msgid "New"
+msgstr ""
+
+#: .\templates\core\home.html:15
+msgid "Discover Uzbekistan"
+msgstr ""
+
+#: .\templates\core\home.html:16
+msgid "Places, stays and booking in one bright platform."
+msgstr ""
+
+#: .\templates\core\home.html:18
+msgid "Browse places"
+msgstr ""
+
+#: .\templates\core\home.html:19
+msgid "Find stays"
+msgstr ""
+
+#: .\templates\core\home.html:26
+msgid "Fast booking"
+msgstr ""
+
+#: .\templates\core\home.html:27
+msgid "Book without queues"
+msgstr ""
+
+#: .\templates\core\home.html:28
+msgid "Choose dates, send request, track status in your dashboard."
+msgstr ""
+
+#: .\templates\core\home.html:30
+msgid "Book a stay"
+msgstr ""
+
+#: .\templates\core\home.html:32
+#, fuzzy
+#| msgid "Dashboard"
+msgid "My dashboard"
+msgstr "Кабинет"
+
+#: .\templates\core\home.html:42
+msgid "Telegram OTP"
+msgstr ""
+
+#: .\templates\core\home.html:43
+msgid "Secure phone verification"
+msgstr ""
+
+#: .\templates\core\home.html:44
+msgid "Verify by Telegram code, like your favorite places and stays."
+msgstr ""
+
+#: .\templates\core\home.html:47
+msgid "How it works"
+msgstr ""
+
+#: .\templates\core\home.html:68
+#, fuzzy
+#| msgid "Places"
+msgid "Popular places"
+msgstr "Места"
+
+#: .\templates\core\home.html:69 .\templates\core\home.html:99
+msgid "See all"
+msgstr ""
+
+#: .\templates\core\home.html:89
+msgid "No places yet."
+msgstr ""
+
+#: .\templates\core\home.html:98
+msgid "Stays for you"
+msgstr ""
+
+#: .\templates\core\home.html:120
+#, fuzzy
+#| msgid "Accommodations"
+msgid "No accommodations yet."
+msgstr "Жилье"
+
+#: .\templates\partials\pagination.html:5
+#: .\templates\partials\pagination.html:7
+msgid "Prev"
+msgstr "Назад"
+
+#: .\templates\partials\pagination.html:11
+#, python-format
+msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s"
+msgstr ""
+
+#: .\templates\partials\pagination.html:15
+#: .\templates\partials\pagination.html:17
+msgid "Next"
+msgstr "Далее"
+
+#~ msgid "Switch"
+#~ msgstr "Сменить"
+
+#~ msgid "Explore Uzbekistan in one place."
+#~ msgstr "Откройте Узбекистан в одной платформе."

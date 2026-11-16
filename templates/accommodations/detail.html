@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ accommodation.translated_name }}{% endblock %}
+{% block title_og %}{{ accommodation.translated_name }}{% endblock %}
+{% block meta_desc %}{{ accommodation.translated_short_description|default:accommodation.translated_name }}{% endblock %}
+{% block og_type %}place{% endblock %}
+{% block og_title %}{{ accommodation.translated_name }} — {{ accommodation.city.translated_name }}{% endblock %}
+{% block og_desc %}{{ accommodation.translated_short_description|default:accommodation.translated_name }}{% endblock %}
+{% block twitter_title %}{{ accommodation.translated_name }}{% endblock %}
+{% block twitter_desc %}{{ accommodation.translated_short_description|default:accommodation.translated_name }}{% endblock %}
+{% with cover=images|first %}{% if cover %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}{% endblock %}
+{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}{% endblock %}
+{% endif %}{% endwith %}
+
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LodgingBusiness",
+  "name": "{{ accommodation.translated_name|escapejs }}",
+  "description": "{{ accommodation.translated_short_description|default:accommodation.translated_name|escapejs }}",
+  "url": "{{ request.build_absolute_uri }}",
+  {% with cover=images|first %}{% if cover %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ cover.image.url }}",{% endif %}{% endwith %}
+  "priceRange": "{{ accommodation.price_per_night }} UZS",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ accommodation.city.translated_name|escapejs }}",
+    "addressRegion": "{{ accommodation.city.region.translated_name|escapejs }}",
+    "addressCountry": "UZ"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:40px;padding-bottom:80px">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+    <span class="sep">›</span>
+    <a href="{% url 'accommodations:list' %}" data-i18n="nav_stays">Turar joylar</a>
+    <span class="sep">›</span>
+    <span class="current">{{ accommodation.translated_name }}</span>
+  </nav>
+
+  <div class="detail-layout">
+
+    <!-- LEFT -->
+    <div>
+      <h1 class="detail-title display">{{ accommodation.translated_name }}</h1>
+      <div class="detail-meta">
+        <span class="location-pill">🏨 {{ accommodation.get_type_display }}</span>
+        <span class="location-pill">📍 {{ accommodation.region }}</span>
+        <span class="location-pill">🏙️ {{ accommodation.city }}</span>
+        <span class="location-pill">👥 {{ accommodation.capacity }} <span data-i18n="guests">mehmon</span></span>
+
+        <button class="like-btn {% if is_liked %}active{% endif %}"
+                data-like-id="{{ accommodation.id }}"
+                data-like-type="accommodation"
+                aria-label="Sevimlilarga qo'shish"
+                style="position:static;background:var(--surface-2);border:1.5px solid var(--border);width:auto;height:auto;padding:8px 16px;border-radius:var(--radius-full);gap:6px;display:inline-flex;">
+          <svg viewBox="0 0 24 24" class="icon" style="width:16px;height:16px"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          {{ accommodation.likes_count|default:0 }}
+        </button>
+      </div>
+
+      <!-- Gallery -->
+      <div class="gallery-main">
+        {% if accommodation.images %}
+          <img src="{{ accommodation.images.0.image.url }}" alt="{{ accommodation.translated_name }}" id="gallery-main-img">
+        {% else %}
+          <img src="{% static 'images/placeholder-stay.jpg' %}" alt="{{ accommodation.translated_name }}">
+        {% endif %}
+      </div>
+      {% if accommodation.images|length > 1 %}
+      <div class="gallery-thumbs">
+        {% for img in accommodation.images %}
+        <div class="gallery-thumb {% if forloop.first %}active{% endif %}" role="button" tabindex="0">
+          <img src="{{ img.image.url }}" alt="Rasm {{ forloop.counter }}">
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Description -->
+      <div class="detail-desc" style="margin-top:32px">
+        <h2 style="font-size:1.2rem;margin-bottom:16px">Bu joy haqida</h2>
+        {{ accommodation.translated_description|linebreaks }}
+      </div>
+
+      <!-- Reviews -->
+      <div style="margin-top:40px">
+        <h2 style="font-size:1.2rem;margin-bottom:20px" data-i18n="reviews">Sharhlar</h2>
+        {% if accommodation.reviews %}
+        <div class="reviews-grid">
+          {% for review in accommodation.reviews %}
+          <div class="review-card">
+            <div class="review-stars">
+              {% for i in "12345" %}{% if forloop.counter <= review.rating %}⭐{% endif %}{% endfor %}
+            </div>
+            <p class="review-text">{{ review.comment }}</p>
+            <span class="review-author">— {{ review.user.full_name|default:review.user.phone }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color:var(--text-3)" data-i18n="no_reviews">Hali sharh yo'q</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- RIGHT: Booking Panel -->
+    <aside>
+      <div class="booking-panel">
+        <div class="price-big">
+          {{ accommodation.price_per_night|floatformat:0 }} so'm
+          <small data-i18n="per_night">/ kecha</small>
+        </div>
+
+        <div style="display:flex;gap:12px;margin:16px 0;flex-wrap:wrap">
+          <div style="background:var(--surface-2);border-radius:var(--radius-md);padding:10px 16px;flex:1;text-align:center;border:1px solid var(--border)">
+            <div style="font-size:.75rem;color:var(--text-3)">👥 Sig'im</div>
+            <div style="font-weight:700">{{ accommodation.capacity }} <span data-i18n="guests">mehmon</span></div>
+          </div>
+          <div style="background:var(--surface-2);border-radius:var(--radius-md);padding:10px 16px;flex:1;text-align:center;border:1px solid var(--border)">
+            <div style="font-size:.75rem;color:var(--text-3)">🏨 Turi</div>
+            <div style="font-weight:700">{{ accommodation.get_type_display }}</div>
+          </div>
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:20px 0"></div>
+
+        {% if user.is_authenticated %}
+          <a href="{% url 'bookings:create_booking' accommodation.id %}" class="btn btn-primary w-full btn-lg" data-i18n="book_now">
+            📅 Bron qilish
+          </a>
+          <div style="margin-top:10px">
+            <button class="btn btn-ghost w-full"
+                    data-basket-id="{{ accommodation.id }}"
+                    data-basket-type="accommodation"
+                    data-basket-name="{{ accommodation.translated_name }}"
+                    data-i18n="add_basket">🛒 Savatchaga</button>
+          </div>
+        {% else %}
+          <div class="alert alert-info">
+            <span>💡</span>
+            <span data-i18n="book_login_hint">Bron qilish uchun tizimga kiring</span>
+          </div>
+          <a href="{% url 'users:login' %}" class="btn btn-primary w-full" data-i18n="nav_login">Kirish</a>
+          <div style="margin-top:8px">
+            <a href="{% url 'users:register' %}" class="btn btn-ghost w-full" data-i18n="nav_register">Ro'yxatdan o'tish</a>
+          </div>
+        {% endif %}
+      </div>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

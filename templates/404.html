@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}404 — Sahifa topilmadi{% endblock %}
+{% block content %}
+<div class="page-404">
+  <div>
+    <div class="num">404</div>
+    <h2>Sahifa topilmadi</h2>
+    <p>Siz izlayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="{% url 'home' %}" class="btn btn-primary btn-lg">🏠 Bosh sahifaga qaytish</a>
+      <a href="{% url 'places:list' %}" class="btn btn-ghost btn-lg">📍 Joylarni ko'rish</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

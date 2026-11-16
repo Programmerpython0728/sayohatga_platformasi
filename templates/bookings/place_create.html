@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Turistik joy broni{% endblock %}
+{% block content %}
+<div class="booking-page">
+
+  <nav class="breadcrumb" style="margin-bottom:28px">
+    <a href="{% url 'home' %}">🏠 Bosh sahifa</a>
+    <span class="sep">›</span>
+    <a href="{% url 'places:detail' place.slug %}">{{ place.translated_name }}</a>
+    <span class="sep">›</span>
+    <span class="current">Turistik joy broni</span>
+  </nav>
+
+  <div class="booking-card">
+    <div class="booking-card-header">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:.8rem;opacity:.7;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em">
+            📍 Turistik joy
+          </div>
+          <h2 style="font-size:1.4rem;font-family:var(--font-display);color:#fff;margin-bottom:6px">
+            {{ place.translated_name }}
+          </h2>
+          <p style="opacity:.8;font-size:.9rem">📍 {{ place.region }} · {{ place.city }}</p>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.6rem;font-weight:900;color:#fff;font-family:var(--font-display)">
+            {{ place.ticket_price|floatformat:0 }} so'm
+          </div>
+          <div style="font-size:.8rem;opacity:.7">taxminiy chipta narxi</div>
+          <div style="margin-top:8px;opacity:.8;font-size:.85rem">
+            👥 kunlik limit {{ place.max_visitors_per_day }} tashrifchi
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-card-body">
+      {% if form.non_field_errors %}
+      <div class="alert alert-error" style="margin-bottom:20px">
+        <span>⚠️</span><span>{{ form.non_field_errors }}</span>
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'bookings:create_place_booking' place.id %}" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label class="form-label" for="id_visit_date">Tashrif sanasi</label>
+          <input type="date" id="id_visit_date" name="visit_date"
+                 class="form-control {% if form.visit_date.errors %}is-error{% endif %}"
+                 value="{{ form.visit_date.value|default:'' }}"
+                 required aria-required="true">
+          {% if form.visit_date.errors %}
+            <div class="form-error">⚠️ {{ form.visit_date.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_visitors">Tashrifchilar soni</label>
+          <input type="number" id="id_visitors" name="visitors"
+                 class="form-control {% if form.visitors.errors %}is-error{% endif %}"
+                 value="{{ form.visitors.value|default:1 }}"
+                 min="1" max="{{ place.max_visitors_per_day }}"
+                 required aria-required="true">
+          <div class="form-hint">Maksimal: {{ place.max_visitors_per_day }} tashrifchi</div>
+          {% if form.visitors.errors %}
+            <div class="form-error">⚠️ {{ form.visitors.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_notes">Izoh</label>
+          <input type="text" id="id_notes" name="notes"
+                 class="form-control {% if form.notes.errors %}is-error{% endif %}"
+                 value="{{ form.notes.value|default:'' }}"
+                 placeholder="Qo'shimcha izoh">
+          {% if form.notes.errors %}
+            <div class="form-error">⚠️ {{ form.notes.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div style="background:var(--surface-2);border-radius:var(--radius-lg);padding:16px;margin-bottom:24px;border:1px solid var(--border)">
+          <div class="booking-info-row">
+            <span class="label">🎫 Chipta narxi</span>
+            <span class="value">{{ place.ticket_price|floatformat:0 }} so'm</span>
+          </div>
+          <div class="booking-info-row">
+            <span class="label">📍 Manzil</span>
+            <span class="value">{{ place.translated_address|default:place.city }}</span>
+          </div>
+          <div class="booking-info-row">
+            <span class="label">👥 Kunlik limit</span>
+            <span class="value">{{ place.max_visitors_per_day }} tashrifchi</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px">
+          <a href="{% url 'places:detail' place.slug %}"
+             class="btn btn-ghost btn-lg" style="flex:1">
+            ← Orqaga
+          </a>
+          <button type="submit" class="btn btn-primary btn-lg" style="flex:2">
+            🎟️ Bron so'rovini yuborish
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

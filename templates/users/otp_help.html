@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Telegram OTP Yordam{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:48px;padding-bottom:80px">
+  <div class="tg-help-page">
+
+    <div class="tg-intro-box reveal">
+      <div style="font-size:3.5rem;margin-bottom:12px">📱</div>
+      <h1 class="display" style="font-size:2rem;margin-bottom:10px" data-i18n="otp_title">Telegram orqali tasdiqlash</h1>
+      <p style="color:var(--text-2)" data-i18n="otp_intro">OTP kodni qanday olish kerak?</p>
+
+      <a href="{{ telegram_bot_url|default:'https://t.me/sam_tourism_bot?start=help' }}"
+         target="_blank" rel="noopener"
+         class="btn btn-lg" style="background:linear-gradient(135deg,#229ed9,#1a8dc8);color:#fff;margin-top:20px;display:inline-flex;"
+         data-i18n="otp_open_bot">
+        📲 Telegram botni ochish
+      </a>
+    </div>
+
+    <div class="tg-steps-grid">
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-number">1</div>
+        <h4 data-i18n="otp_step1">Telegram botni oching</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="otp_step1_desc">
+          Quyidagi tugmani bosib Telegram botimizni oching
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-number">2</div>
+        <h4 data-i18n="otp_step2">/start buyrug'ini yuboring</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="otp_step2_desc">
+          Botga /start yozing yoki Start tugmasini bosing
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-number">3</div>
+        <h4 data-i18n="otp_step3">OTP kodni oling</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="otp_step3_desc">
+          Bot sizga 6 xonali tasdiqlash kodini yuboradi
+        </p>
+      </div>
+      <div class="step-card reveal reveal-delay-4">
+        <div class="step-number">4</div>
+        <h4 data-i18n="otp_step4">Kodni kiriting</h4>
+        <p style="font-size:.875rem;color:var(--text-2);margin-top:8px" data-i18n="otp_step4_desc">
+          Olingan kodni ro'yxatdan o'tish formasiga kiriting
+        </p>
+      </div>
+    </div>
+
+    <!-- Tip -->
+    <div class="tg-tip reveal">
+      <p style="font-weight:600" data-i18n="otp_tip">💡 Maslahat: Kod 10 daqiqa davomida amal qiladi</p>
+      <p style="font-size:.875rem;color:var(--text-2);margin-top:6px">
+        Agar kod kelmasa, botga yana /start yuboring yoki bir necha daqiqa kuting.
+      </p>
+    </div>
+
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:32px;flex-wrap:wrap">
+      <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg" data-i18n="otp_go_reg">
+        Ro'yxatdan o'tishga o'tish
+      </a>
+      <a href="{% url 'users:login' %}" class="btn btn-ghost btn-lg" data-i18n="otp_go_login">
+        Kirish sahifasiga o'tish
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
